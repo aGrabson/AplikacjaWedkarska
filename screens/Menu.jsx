@@ -65,8 +65,8 @@ const styles = StyleSheet.create({
   },
   settings1: {
     position: "relative",
-    paddingVertical: 10,
-    margin: 10,
+    paddingVertical: 1,
+    margin: 5,
   },
   rectanglePressable: {
     position: "relative",
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     height: 44,
     alignItems: "center",
     left: "2%",
-    top: "70%"
+    top: "60%"
   },
   iconPerson: {
     position: "relative",
@@ -103,7 +103,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: "#DC143C",
     textAlign: "center",
-    top: 11,
   },
   view: {
     position: "relative",
@@ -111,7 +110,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#DADADA",
     flex: 1,
     width: "100%",
-    height: 896,
+    height: "100%",
     overflow: "hidden",
 
   },
