@@ -70,20 +70,12 @@ const styles = StyleSheet.create({
   },
   rectanglePressable: {
     position: "relative",
-    borderRadius: 54,
-    backgroundColor: "#000",
-    shadowColor: "rgba(0, 0, 0, 0.25)",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowRadius: 4,
-    elevation: 4,
-    shadowOpacity: 1,
-    width: 139,
-    height: 44,
+    borderRadius: 52,
+    backgroundColor: "#0000FF",
+    width: 140,
+    height: 50,
+    justifyContent:'center',
     alignItems: "center",
-    left: "2%",
     top: "60%"
   },
   iconPerson: {
@@ -101,7 +93,7 @@ const styles = StyleSheet.create({
   },
   logout: {
     fontSize: 20,
-    color: "#DC143C",
+    color: "#FFFFFF",
     textAlign: "center",
   },
   view: {

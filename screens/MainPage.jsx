@@ -1,10 +1,13 @@
 import  React, {useEffect} from "react";
 import { StyleSheet, Text, View } from 'react-native';
 
+
+
 export const MainPage = ({navigation}) => {
+
     return (
       <View style={styles.container}>
-        <Text>Mainpage</Text>
+        
       </View>
     );
   };

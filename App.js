@@ -14,22 +14,22 @@ import MIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import * as eva from "@eva-design/eva";
 import { StyleSheet} from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import {Text, TouchableOpacity, View, Image} from 'react-native'
+import {Text, TouchableOpacity, View, Image, TextInput} from 'react-native';
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
 function DrawerRoot({navigation}) {
   return (
-      <Drawer.Navigator screenOptions={{ headerStyle: {backgroundColor:'#DADADA',borderBottomLeftRadius:25,borderBottomRightRadius:25}}} initialRouteName="MainPage" drawerContent={(props)=><Menu {...props}></Menu>}>
-        <Drawer.Screen name="MainPage" component={MainPage} options={{headerTitle: () => (<View><TouchableOpacity onPress={() => navigation.navigate("ReservationPage")} style={{backgroundColor:'#0000FF', borderRadius:25, height:45, width:125, alignItems:'center', justifyContent:'center'}}><Text style={{fontSize:20,color:'#FFFFFF'}}>Rezerwacja</Text></TouchableOpacity></View>)}}/>
-        <Drawer.Screen name="ProfilePage" component={ProfilePage} options={{headerTitle: () => (<View><TouchableOpacity><Text style={{fontSize:20, color:'#0F4C8A'}}>Mój Profil</Text></TouchableOpacity></View>),headerRight: () => (
+      <Drawer.Navigator screenOptions={{ headerStyle: {backgroundColor:'#DADADA',height:100,borderBottomLeftRadius:25,borderBottomRightRadius:25}}} initialRouteName="MainPage" drawerContent={(props)=><Menu {...props}></Menu>}>
+        <Drawer.Screen name="MainPage" component={MainPage} options={{headerTitle: () => (<View><TouchableOpacity onPress={() => navigation.navigate("ReservationPage")} style={{backgroundColor:'#0000FF', borderRadius:25, height:60, width:125, alignItems:'center', justifyContent:'center'}}><Text style={{fontSize:20,color:'#FFFFFF'}}>Rezerwacja</Text></TouchableOpacity></View>)}}/>
+        <Drawer.Screen name="ProfilePage" component={ProfilePage} options={{headerTitle: () => (<View><Text style={{fontSize:28, color:'#0F4C8A'}}>Mój Profil</Text></View>),headerRight: () => (
               <Image 
-                style={{ right:'10%',width: 50, height: 50, borderRadius:50}}
+                style={{ right:'10%',width: 70, height: 70, borderRadius:50}}
                 source={require("./src/image.jpg")}>
               </Image>
             ),}}/>
-        <Drawer.Screen name="ReservationPage" component={ReservationPage}/>
-        <Drawer.Screen name="RulesPage" component={RulesPage}/>
+        <Drawer.Screen name="ReservationPage" component={ReservationPage} options={{headerTitle: () => (<View><TextInput placeholder='Wyszukaj łowisko' style={{fontSize:20, borderColor:'#EBEBEB'}}></TextInput></View>)}}/>
+        <Drawer.Screen name="RulesPage" component={RulesPage} options={{headerTitle: () => (<View><Text style={{fontSize:28, color:'#0F4C8A'}}>Regulamin</Text></View>)}}/>
       </Drawer.Navigator>
   );
 }
