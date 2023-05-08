@@ -32,6 +32,11 @@ export const Menu = ({ state, navigation }) => {
             <Text style={[styles.settings]}>Regulamin</Text>
           </View>
         </TouchableOpacity>
+        <TouchableOpacity style={[styles.settings1]} onPress={() => navigation.navigate("InspectPage")}>
+          <View style={{ flexDirection: 'row' }}>
+            <Text style={[styles.settings]}>Kontrola</Text>
+          </View>
+        </TouchableOpacity>
         <TouchableOpacity
           style={[styles.rectanglePressable]}
           onPress={() => {
@@ -76,7 +81,7 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent:'center',
     alignItems: "center",
-    top: "60%"
+    top: "40%"
   },
   iconPerson: {
     position: "relative",

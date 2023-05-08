@@ -1,17 +1,67 @@
-import  React, {useEffect} from "react";
-import { StyleSheet, Text, View } from 'react-native';
+import  React, {useEffect, useState} from "react";
+import { StyleSheet, Text, View, PermissionsAndroid  } from 'react-native';
+import MapView from 'react-native-maps';
 
 
+const MapComponent = ({ initialLocation }) => {
 
-export const MainPage = ({navigation}) => {
+  return (
+    <MapView
+      style={{ flex: 1 }}
+      initialRegion={{
+        latitude: 50.888168,
+        longitude: 20.634342,
+        latitudeDelta: 0.1,
+        longitudeDelta: 0.1,
+      }}
+    />
+  );
+};
 
-    return (
-      <View style={styles.container}>
-        
-      </View>
-    );
-  };
-  
+export const MainPage = ({ navigation }) => {
+  const [hasLocationPermission, setHasLocationPermission] = useState(false);
+  const [initialLocation, setInitialLocation] = useState({
+    latitude: 50.888168,
+    longitude: 20.634342,
+  });
+
+  async function requestLocationPermission() {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'Zezwolenie na dostęp do lokalizacji.',
+          message: 'Proszę nadać uprawnienia do twojej lokalizacji.',
+          buttonNeutral: 'Zapytaj później',
+          buttonNegative: 'Anuluj',
+          buttonPositive: 'Zezwól',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        setHasLocationPermission(true);
+
+      } else {
+        setHasLocationPermission(false);
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  }
+
+  useEffect(() => {
+    requestLocationPermission();
+  }, []);
+
+  return (
+    <View style={styles.container}>
+      {hasLocationPermission ? (
+        <MapComponent initialLocation={initialLocation} />
+      ) : (
+        <Text>Proszę nadać uprawnienia aplikacji do lokalizacji!</Text>
+      )}
+    </View>
+  );
+};
 const styles = StyleSheet.create({
     container: {
       flex: 1, 
@@ -47,9 +97,6 @@ const styles = StyleSheet.create({
     buttonText: {
       color: 'white',
       fontSize: 17,
-    },
-    cos: {
-      top: 50,
     },
     search: {
       height: 70,
