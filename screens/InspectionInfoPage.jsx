@@ -32,7 +32,7 @@ const data = [
       );
     };
 
-export const InspectionInfoPage = () => {
+export const InspectionInfoPage = (navigation) => {
   return (
     <View style={styles.container}>
         <Text style={styles.middleText}>Lista wędkarzy na łowisku</Text>

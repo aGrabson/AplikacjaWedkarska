@@ -14,7 +14,6 @@ import { ReservePage } from './screens/ReservePage';
 import { InspectPage } from './screens/InspectPage';
 import { InspectionInfoPage } from './screens/InspectionInfoPage';
 import { InspectUserPage } from './screens/InspectUserPage';
-
 import { IconRegistry, ApplicationProvider } from '@ui-kitten/components';
 import MIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import * as eva from "@eva-design/eva";

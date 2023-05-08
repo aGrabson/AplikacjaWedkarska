@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent:'center',
     alignItems: "center",
-    top: "40%"
+    top: "50%"
   },
   iconPerson: {
     position: "relative",

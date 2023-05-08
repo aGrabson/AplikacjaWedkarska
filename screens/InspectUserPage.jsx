@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 
-export const InspectUserPage = () => {
+export const InspectUserPage = (navigation) => {
     return (
         <View style={styles.container}>
             <SafeAreaView style={styles.containerView}>

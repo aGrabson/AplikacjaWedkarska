@@ -21,7 +21,7 @@ const MapComponent = ({ location }) => {
   );
 };
 
-export const InspectPage = () => {
+export const InspectPage = (navigation) => {
   const [location, setLocation] = useState({
     latitude: 51.043444,
     longitude: 20.843153,
