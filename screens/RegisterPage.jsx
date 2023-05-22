@@ -1,11 +1,40 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, ImageBackground, View, TouchableOpacity, ScrollView, TextInput, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, Text, ImageBackground, View, TouchableOpacity, ScrollView, TextInput, KeyboardAvoidingView, Alert } from 'react-native';
 import { Datepicker as RNKDatepicker, Icon as RNKIcon } from "@ui-kitten/components";
-
+import {auth, db} from "../firebase.js";
 
 export const RegisterPage = ({navigation}) => {
+
+const [email, setEmail] = useState('');
+const [password, setPassword] = useState('');
+const [firstname, setFirstname] = useState('');
+const [surname, setSurname] = useState('');
+const [cardNumber, setCardNumber] = useState('');
 const [dateOfBirth, setDateOfBirth] = useState(new Date());
 
+const currentDate = new Date();
+const day = currentDate.getDate() < 10 ? "0" + currentDate.getDate() : currentDate.getDate();
+const month = currentDate.getMonth() < 9 ? "0" + (currentDate.getMonth() + 1) : currentDate.getMonth() + 1;
+const year = currentDate.getFullYear();
+const formattedDate = `${day}.${month}.${year}`;
+
+const handleRegister = async () => {
+      auth
+        .createUserWithEmailAndPassword(email,password)
+        .then(userCredential => {
+          const user = userCredential.user;
+          db.collection('users').doc(user.uid).set({ 'firstname': firstname, 'surname': surname, 'email': email, 'cardNumber': cardNumber, 'dateOfBirth': formattedDate})
+          navigation.navigate('DrawerRoot', { screen: 'MainPage' });
+
+
+        })
+  };
+
+
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const minDate = new Date(1900, 0, 1); // January 1, 1900
   return (
       <View style={styles.container}>
       <ImageBackground style={styles.background} source={require('../src/tlobazowe.png')}>
@@ -13,11 +42,26 @@ const [dateOfBirth, setDateOfBirth] = useState(new Date());
             <KeyboardAvoidingView>
               <ScrollView style={styles.scrollView}>
                 <Text style={styles.text}>Dołącz do nas</Text>
-                <TextInput style={styles.loginInput} placeholder={'Imię'}></TextInput>
-                <TextInput style={styles.loginInput} placeholder={'Nazwisko'}></TextInput>
-                <TextInput style={styles.loginInput} placeholder={'Email'}></TextInput>
-                <TextInput style={styles.loginInput} secureTextEntry={true} placeholder={'Hasło'}></TextInput>
-                <TextInput style={styles.loginInput} placeholder={'Numer karty'}></TextInput>
+                <TextInput style={styles.loginInput} placeholder={'Imię'}
+                  value={firstname}
+                  onChangeText={text => setFirstname(text)}>
+                </TextInput>
+                <TextInput style={styles.loginInput} placeholder={'Nazwisko'}
+                  value={surname}
+                  onChangeText={text => setSurname(text)}>
+                </TextInput>
+                <TextInput style={styles.loginInput} placeholder={'Email'}
+                  value={email}
+                  onChangeText={text => setEmail(text)}>
+                </TextInput>
+                <TextInput style={styles.loginInput} secureTextEntry={true} placeholder={'Hasło'}
+                  value={password}
+                  onChangeText={text => setPassword(text)}>
+                </TextInput>
+                <TextInput style={styles.loginInput} placeholder={'Numer karty'}
+                  value={cardNumber}
+                  onChangeText={text => setCardNumber(text)}>
+                </TextInput>
                 <View style={styles.datepickerContainer}>
                   <View style={styles.labelContainer}>
                     <Text style={styles.datepickerLabel}>Data urodzenia</Text>
@@ -28,10 +72,12 @@ const [dateOfBirth, setDateOfBirth] = useState(new Date());
                     date={dateOfBirth}
                     onSelect={setDateOfBirth}
                     controlStyle={styles.datePickerValue}
+                    max={today}
+                    min={minDate}
                   />
                 </View>
                 <TouchableOpacity onPress={() => navigation.navigate('LoginPage')}><Text style={styles.alreadyUserText}>Masz już konto? Zaloguj się</Text></TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('LoginPage')} style={styles.button}><Text style={styles.buttonText}>Zarejestruj</Text></TouchableOpacity>
+                <TouchableOpacity onPress={handleRegister} style={styles.button}><Text style={styles.buttonText}>Zarejestruj</Text></TouchableOpacity>
               </ScrollView>
             </KeyboardAvoidingView>
           </View>

@@ -1,410 +1,54 @@
 import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import {auth, db} from '../firebase.js';
+import {useEffect, useState} from 'react';
+import {
+  collection,
+  getDocs,
+} from "firebase/firestore";
+
+
 export const RulesPage = ({navigation}) => {
+
+  const uid = auth.currentUser?.uid;
+  const [data,setData] = useState({});
+  const fetchRule = async () => {
+    try {
+      const docRef = db.collection("rules").doc(uid);
+      const doc = await docRef.get();
+  
+      const ruleData = doc.data();
+      setData(ruleData);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
+  useEffect(() => {
+    fetchRule();
+  }, []);
+
+
+
+  const [infoList,setInfoList]=useState([
+   
+  ]);
+  const InformationsCollectionRef = collection(db, "rules");
+
+  useEffect(() => {
+    const getInformations = async () => {
+      const data = await getDocs(InformationsCollectionRef);
+      setInfoList(data.docs.map((doc) => ({ ...doc.data(), id: doc.id})));
+    };
+
+    getInformations();
+  }, []);
+
 
     return (
         <View style={styles.container}>
           <Text style={{color:'#0F4C8A',fontSize:20,alignSelf:'center'}}>Regulamin amatorskiego połowu ryb</Text>
-          <SafeAreaView><ScrollView><Text style={{fontSize:12,alignSelf:'center'}}>1. WSTĘP
-Regulamin Amatorskiego Połowu Ryb, zwany dalej Regulaminem, stanowi zbiór
-przepisów dotyczących zasad uprawiania wędkarstwa i ochrony zasobów ichtiofauny.
-Postanowienia Regulaminu obowiązują wszystkich wędkujących w wodach będących
-w uŜytkowaniu Polskiego Związku Wędkarskiego / PZW / zarówno zrzeszonych w
-Związku, jak i nie zrzeszonych obywateli polskich oraz cudzoziemców. Na łowiskach
-specjalnych PZW mogą obowiązywać odrębne lub dodatkowe regulaminy. W wodach
-PZW dopuszcza się amatorski połów ryb kuszą za zgodą uprawnionego do rybactwa
-w obwodzie rybackim. Amatorski połów ryb kuszą moŜe uprawiać osoba posiadająca
-kartę łowiectwa podwodnego.
-2. PRAWA WĘDKUJĄCEGO W WODACH PZW
-§ 1
-1. Prawo do wędkowania w wodach uŜytkowanych przez Polski Związek Wędkarski
-mają członkowie PZW i osoby nie zrzeszone w PZW, posiadający kartę wędkarską,
-przestrzegający zasad ujętych w niniejszym Regulaminie, po opłaceniu stosownych
-składek.
-2. Zasady wydawania kart wędkarskich regulują przepisy ustawy z dnia 18 kwietnia
-1985 r. o rybactwie śródlądowym, z późniejszymi zmianami.
-3. Z obowiązku posiadania karty wędkarskiej są zwolnione osoby do 14 lat oraz
-cudzoziemcy czasowo przebywający w Polsce.
-4. Prawo do samodzielnego wędkowania ma wędkarz, który ukończył 14 lat, z tym Ŝe
-młodzieŜ do 16 lat nie ma prawa do wędkowanie w porze nocnej bez nadzoru osoby
-uprawnionej do opieki.
-5. Członek PZW do 14 lat ma prawo wędkować z następującymi ograniczeniami: w
-ramach własnego łowiska, zgodnie z limitem ilościowym i wagowym, wyłącznie pod
-nadzorem osoby uprawnionej do opieki.
-6. MłodzieŜ niezrzeszona w wieku do 14 lat ma prawo wędkować:
-a) w ramach uprawnień i dziennego limitu połowu ryb swojego opiekuna metodą
-spinningową lub muchową. Przekazanie uprawnień nie wyklucza wędkowania
-opiekuna na jedną wędkę.
-b) w ramach uprawnień stanowiska i dziennego limitu połowu ryb swojego opiekuna,
-mają prawo wędkować dwie osoby, kaŜda na jedną wędkę. Udostępnienie
-stanowiska i limitu dwóm osobom nie wyklucza wędkowania opiekuna na jedną
-wędkę.
-7. Dopuszcza się wędkowanie kilkuosobowych grup młodzieŜy nie posiadających
-kart wędkarskich, pod nadzorem opiekuna posiadającego stosowne uprawnienia
-oraz zezwolenie wydane przez zarząd okręgu lub koła. KaŜda osoba z grupy ma
-prawo łowić wyłącznie na jedną wędkę, z zachowaniem uprawnień do własnego
-stanowiska i dziennego limitu połowu przysługującego członkowi PZW.
-8. Posiadaczowi odznaki "Wzorowy Młody Wędkarz", który nie ukończył 14 lat,
-przysługują uprawnienia do wędkowania na równi z członkiem PZW, z zastrzeŜeniem
-pkt.4.
-9. Wędkarz ma prawo do swobodnego dostępu do wody, a takŜe do przybijania i
-cumowania do brzegu sprzętu pływającego, jeśli lokalne przepisy wydane przez
-uprawniony organ nie stanowią inaczej.
-10. Członek PZW ma prawo udostępnić współmałŜonkowi jedną ze swoich wędek do
-wędkowania, w granicach przysługującego mu stanowiska i limitu połowu, bez
-konieczności uiszczania przez współmałŜonka składki członkowskiej oraz składki na
-ochronę i zagospodarowanie wód. PowyŜsze ma wyłącznie zastosowanie przy
-wędkowaniu dopuszczającym łowienie na dwie wędki.
-3. OBOWIĄZKI WĘDKUJĄCEGO W WODACH PZW
-§ 2
-1. W czasie wędkowania wędkarz ma obowiązek posiadać : kartę wędkarską,
-legitymację PZW z potwierdzeniem uiszczenia naleŜnych składek lub inne waŜne
-zezwolenie uprawniające do wędkowania na danym łowisku.
-2. Przed przystąpieniem do wędkowania, wędkarz zobowiązany jest do ustalenia do
-kogo naleŜy wybrane przez niego łowisko i czy nie obowiązują na nim dodatkowe
-ograniczenia, poza zawartymi w niniejszym Regulaminie.
-3. Przy wyborze i zajmowaniu miejsca na łowisku pierwszeństwo ma ten wędkarz,
-który przybył na nie wcześniej. Przy zajmowaniu stanowisk wędkujący powinni
-zachować między sobą odpowiednie odstępy, określone w §§ 4, 5, 7 Regulaminu.
-Odstępy te mogą być zmniejszone tylko za zgodą wędkarza, który wcześniej zajął
-dane stanowisko.
-4. W czasie wędkowania wędki muszą być pod stałym nadzorem ich właściciela.
-5. Wędkarz zobowiązany jest posiadać przyrząd do wyjmowania haczyków z
-pyszczków ryb. Ryby z haczyka naleŜy uwalniać z zachowaniem maksymalnej
-ostroŜności.
-6. Wędkarz zobowiązany jest utrzymać w czystości stanowisko wędkarskie w
-promieniu minimum 5 metrów, bez względu na stan, jaki zastał przed rozpoczęciem
-połowu.
-7. Obowiązkiem wędkarza jest opuszczenie łowiska, jeśli rozgrywane mają być na
-nim zawody sportowe. Organizator zawodów musi posiadać pisemne zezwolenie
-uprawnionego do rybactwa w obwodzie rybackim.
-8. W przypadku zauwaŜenia zanieczyszczenia wody lub jego skutków, jak np. śnięte
-ryby, zmiana koloru wody, plamy olejowe, nienaturalny zapach, wędkarz ma
-obowiązek natychmiast zawiadomić o tym zarząd najbliŜszego koła lub okręgu PZW,
-policję albo najbliŜszy organ administracji publicznej.
-9. JeŜeli wędkarz złowi rybę oznakowaną i zabiera ją, ma obowiązek przesłać do
-zarządu okręgu PZW, na którego terenie została ona złowiona, znaczek i kilka łusek
-wyjętych powyŜej linii bocznej ryby, podając równocześnie jej gatunek, długość i
-cięŜar oraz miejsce, datę i godzinę połowu.
-4. ZASADY WĘDKOWANIA
-§ 3
-1. Wędka
-Wędkarz ma obowiązek posługiwać się wędką składającą się z wędziska o długości
-co najmniej 30 cm, do którego przymocowana jest linka zakończona:
-a/ jednym haczykiem z przynętą, albo
-b/ nie więcej niŜ dwoma haczykami, kaŜdy ze sztuczną przynętą imitującą owada lub
-jego stadia rozwojowe; przy czym kaŜdy haczyk moŜe mieć nie więcej niŜ dwa ostrza
-rozstawione w taki sposób, aby nie wykraczały one poza obwód koła o średnicy 30
-mm albo
-c/ sztuczną przynętą wyposaŜoną w nie więcej niŜ trzy haczyki; haczyk moŜe mieć
-nie więcej niŜ cztery ostrza, rozstawione w taki sposób, aby nie wykraczały one poza
-obwód koła o średnicy 30 mm.
-d/ przy połowie ryb spod lodu: jednym haczykiem z przynętą, przy czym haczyk nie
-moŜe mieć więcej niŜ trzy ostrza, rozstawione w taki sposób, aby nie wykraczały one
-poza obwód koła o średnicy 20 mm, albo
-e/ sztuczną przynętą wyposaŜoną w nie więcej niŜ dwa haczyki, przy czym kaŜdy
-haczyk moŜe mieć nie więcej niŜ trzy ostrza, rozstawione w taki sposób, aby nie
-wykraczały one poza obwód koła o średnicy 20 mm
-2. Przynęty
-a/ Jako przynęty mogą być stosowane:
-- przynęty naturalne: zwierzęce i roślinne,
-- przynęty sztuczne.
-b/ Zabrania się stosować jako przynęt / zanęt / :
-- zwierząt i roślin chronionych,
-- ikry rybiej,
-- wykreśla się zapis "Ŝywej ryby"
-c/ Przynęty naturalne zwierzęce to organizmy Ŝywe lub martwe, a takŜe ich części. W
-przypadku stosowania jako przynęt martwych ryb, mogą być uŜyte tylko ryby
-wymiarowe lub nie objęte wymiarem ochronnym oraz nie znajdujące się w okresie
-ochronnym.
-d/ Przynęty naturalne roślinne to rośliny, ich części oraz przetwory z nich / np. ciasta i
-pasty/. Do przynęt tych umownie zalicza się teŜ sery.
-e/ Przynęty sztuczne to grupa przynęt wykonanych z róŜnych materiałów naturalnych
-lub sztucznych. Przynęty te mogą być uzbrojone najwyŜej w trzy haczyki o rozstawie
-ostrzy nie większym niŜ szerokość przynęty sztucznej / z tolerancją do 2 mm /.
-f/ Sztuczne muchy to grupa przynęt sztucznych wykonanych na haczyku z jednym
-lub dwoma ostrzami, w dowolnej kombinacji co najmniej dwóch materiałów.
-3. Wędkowanie
-3.1. W wodach uŜytkowanych przez PZW moŜna wędkować z brzegu przez całą
-dobę, z wyjątkiem wód krainy pstrąga i lipienia / wymienionych w odrębnym
-informatorze PZW /, gdzie wolno wędkować tylko w porze dziennej, tj. od świtu do
-zmierzchu /1 godz. przed wschodem słońca i 1 godz. po zachodzie słońca /.
-3.2. Zabrania się łowić ryb w ustalonych dla nich okresach i miejscach ochronnych,
-takich jak: tarliska, w tym krześliska, zimowiska, mateczniki oraz w obrębach
-ochronnych i hodowlanych.
-3.3. Wędkarz ma obowiązek przestrzegać limitów dziennych połowów ryb.
-3.4. Ponadto wędkarzowi nie wolno :
-a/ przechowywać i zabierać ryb poniŜej ich wymiarów ochronnych,
-b/ sprzedawać złowionych ryb,
-c/ rozdawać złowionych ryb na terenie łowiska,
-d/ łowić ryb w odległości mniejszej niŜ 50 m od: jazów, śluz, tam, zapór, przepławek
-oraz innych urządzeń słuŜących do piętrzenia wody. Zakaz ten nie dotyczy budowli
-hydrotechnicznych słuŜących regulacji brzegów lub dna, np. ostrogi, opaski i progi
-denne,
-e/ łowić ryb w odległości mniejszej niŜ 50 m od rozstawionych i oznakowanych sieci i
-innych rybackich narzędzi połowu,
-f/ łowić metodą "szarpaka",
-g/ budować pomostów i stanowisk wędkarskich bez zgody uŜytkownika wody,
-h/ posługiwać się sprzętem pływającym nie zarejestrowanym i nie oznakowanym
-zgodnie z obowiązującymi przepisami,
-i/ łowić ryb ze sprzętu pływającego w porze nocnej / od zmierzchu do świtu / w
-jeziorach i zbiornikach zaporowych, z wyjątkiem okresu od 1 czerwca do 30
-września,
-j/ stosować sztucznego światła, słuŜącego lokalizowaniu bądź zwabianiu ryb na
-stanowisko,
-k/ kotwiczyć łodzi na oznakowanych torach Ŝeglugi wodnej,
-l/ wędkować z mostów,
-m/ obcinać głów rybom przed zakończeniem wędkowania.
-3.5. Ryby w stanie Ŝywym, złowione zgodnie z limitem ilościowym, naleŜy
-przechowywać wyłącznie w siatkach wykonanych z miękkich nici, rozpiętych na
-sztywnych obręczach. KaŜdy wędkarz musi przechowywać osobno złowione przez
-siebie ryby, z tym Ŝe zabrania się przechowywania Ŝywych ryb dłuŜej niŜ 24 godz.
-3.6. Złowione ryby niewymiarowe lub będące pod ochroną muszą być bezwzględnie
-z ostroŜnością wypuszczone do wody, nawet gdy ich stan wskazuje na niewielkie
-szanse przeŜycia.
-3.7. Raków pręgowatych, raków sygnałowych oraz ryb z gatunku trawianka,
-czebaczek amurski i sumik karłowaty po złowieniu nie naleŜy wypuszczać do
-łowiska, w którym je złowiono, ani do innych wód.
-3.8. W czasie połowu ryb na przynęty naturalne zabrania się równoczesnego
-łowienia metodami spinningową lub muchową.
-5. ŁOWIENIE RYB SPOKOJNEGO śERU
-§ 4
-1. Łowienie ryb spokojnego Ŝeru dozwolone jest równocześnie na dwie wędki.
-2. Uprawniony do rybactwa w obwodzie rybackim moŜe określić dopuszczalną ilość
-zanęt w danym łowisku.
-3. Wędkarz łowiący ryby na przynęty naturalne, zobowiązany jest do zachowania
-następujących minimalnych odstępów od innych wędkujących:
-a/ łowiąc z brzegu - 10 m
-b/ między łodziami - 25 m
-c/ między łodzią a brzegiem - 50 m
-6. ŁOWIENIE RYB DRAPIEśNYCH
-§ 5
-1. Łowienie ryb drapieŜnych, na przynęty naturalne, dozwolone jest równocześnie na
-dwie wędki.
-2. Łowiąc ryby metodą spinningową lub trollingową wolno uŜywać jednej wędki,
-uzbrojonej w jedną przynętę sztuczną.
-3. Łowiąc ryby drapieŜne na przynęty sztuczne lub sztuczną muchę obowiązuje
-zachowanie następujących odległości pomiędzy wędkującymi:
-a/ łowiąc z brzegu - 30 m
-b/ łowiąc z łodzi lub brodząc - 50 m
-7. ŁOWIENIE RYB ŁOSOSIOWATYCH
-§ 6
-1. Łowienie ryb łososiowatych dozwolone jest wyłącznie na przynęty sztuczne z
-uwzględnieniem ustaleń szczegółowych wymienionych w informatorze wód krainy
-pstrąga i lipienia, z wyłączeniem pstrąga tęczowego.
-a) w innych wodach nie objętych informatorem krainy wód pstrąga i lipienia, łowienie
-tych ryb dozwolone jest na przynęty dopuszczone przez uprawnionego do rybactwa
-2. Przy łowieniu ryb łososiowatych metodą spinningową lub trollingową obowiązują te
-same zasady, jak przy łowieniu ryb drapieŜnych.
-3. Przy łowieniu metodą muchową obowiązkiem wędkarza jest przestrzeganie
-następujących zasad :
-a/ przy łowieniu w wodach krainy ryb łososiowatych wolno posługiwać się tylko jedną
-wędką,
-b/ wędka stosowana w metodzie muchowej musi być wyposaŜona w sznur muchowy
-i kołowrotek o szpuli ruchomej. śyłkę wolno stosować wyłącznie do wiązania
-przyponów, których długość nie moŜe przekroczyć dwukrotnej długości uŜywanego
-wędziska,
-c/ nie wolno stosować więcej niŜ dwóch sztucznych much na jednej wędce,
-d/ nie wolno stosować dodatkowego zewnętrznego obciąŜenia linki lub przyponu.
-Dopuszczalne jest stosowanie linki obciąŜonej w jej konstrukcji,
-e/ w wodach krainy ryb łososiowatych , w których dopuszcza się łowienie na przynęty
-roślinne wolno obciąŜać wyłącznie zestaw z przynętą roślinną. Zabrania się
-dodatkowego uzbrajania takich zestawów sztuczną przynętą,
-f/ złowione ryby łososiowate, przeznaczone do zabrania, naleŜy uśmiercić
-natychmiast po złowieniu,
-g/ przy łowieniu ryb łososiowatych w wodach udostępnionych tylko do łowienia na
-sztuczną muchę, zakazuje się stosowania kuli wodnej, a takŜe innych zastępujących
-ją przedmiotów / np. spławik/.
-8. ŁOWIENIE RYB SPOD LODU
-§ 7
-1. Łowienie ryb spod lodu dozwolone jest wyłącznie przy uŜyciu jednej wędki.
-2. Zabrania się stosować martwej i Ŝywej ryby jako przynęty.
-3. Łowiąc ryby spod lodu naleŜy wykonywać otwory o średnicy nie większej niŜ 20
-cm. Między otworami naleŜy zachować odległość nie mniejszą niŜ 1 m.
-4. Wędkujący na lodzie powinni zachować pomiędzy sobą odległości co najmniej 10
-m.
-5. Zabrania się łowienia ryb spod lodu w porze nocnej, tj. od zmierzchu do świtu.
-6. Ryby złowione spod lodu, przeznaczone do zabrania, naleŜy uśmiercić
-bezpośrednio po złowieniu.
-9. OCHRONA RYB
-§ 8
-1. Wymiar ochronny ryby stanowi długość od początku głowy do najdalszego krańca
-płetwy ogonowej.
-2. Obowiązują następujące wymiary ochronne ryb :
-- boleń do 40 cm
-- brzana karpacka do 20 cm
-- brzanka do 20 cm
-- brzana do 40 cm
-- certa do 30 cm
-- głowacica do 70 cm
-- jaź do 25 cm
-- jelec do 15 cm
-- karp do 30 cm / nie dotyczy rzek/
-- kleń do 25 cm
-- lin do 25 cm
-- lipień do 30 cm
-- łosoś do 35 cm
-- miętus:
-a) w rzece Odrze od ujścia rzeki Warty, do granicy z wodami morskimi do 30 cm
-b) w pozostałych wodach do 25 cm
-- pstrąg potokowy:
-a/ w rzece Wiśle i jej dopływach od jej źródeł do ujścia rzeki San oraz w rzece Odrze
-i jej dopływach od granicy państwowej z Republiką Czeską do ujścia rzeki Bystrzycy
-oraz w rzece Bystrzycy i jej dopływach do 25 cm
-b/ w pozostałych wodach do 30 cm
-- rozpiór do 25 cm
-- sandacz do 45 cm
-- sapa do 25 cm
-- sieja do 35 cm
-- sielawa do 18 cm
-- sum do 70 cm
-- szczupak do 45 cm
-- świnka do 25 cm
-- troć do 35 cm
-- troć jeziorowa do 50 cm
-- węgorz do 40 cm
-- wzdręga do 15 cm
-3. Ustala się następujące okresy ochronne ryb :
-- boleń - od 1 stycznia do 30 kwietnia
-- brzana - od 1 stycznia do 30 czerwca
-- brzana karpacka - od 1 stycznia do 15 lipca
-- certa :
-a/ w rzece Wiśle od zapory we Włocławku do jej ujścia od 1 września do 30
-listopada,
-b/ w rzece Wiśle powyŜej zapory we Włocławku i w pozostałych rzekach od 1
-stycznia do 30 czerwca
-- głowacica od 1 marca do 31 maja
-- lipień od 1 marca do 31 maja
-- łosoś :
-a/ w rzece Wiśle i jej dopływach powyŜej zapory we Włocławku od 1 października do
-31 grudnia, w pozostałym okresie obowiązuje zakaz połowu w czwartki, piątki, soboty
-i niedziele,
-b/ na odcinku rzeki Wisły od zapory we Włocławku do jej ujścia od 1 grudnia do
-końca lutego; w okresie od 1 marca do 31 sierpnia obowiązuje zakaz połowu w piątki,
-soboty i niedziele,
-c/ w pozostałych rzekach od 1 października do 31 grudnia.
-- miętus z wyjątkiem rzeki Odry od ujścia rzeki Warty do granicy z wodami morskimi
-od 1 grudnia do końca lutego
-- pstrąg potokowy :
-a/ w rzece Wiśle i jej dopływach od jej źródeł do ujścia rzeki San, w rzece San i jej
-dopływach oraz w rzece Odrze i jej dopływach od granicy państwowej z Republiką
-Czeską do ujścia rzeki Bystrzycy oraz w rzece Bystrzycy i jej dopływach od 1
-września do 31 stycznia,
-b/ w pozostałych wodach od 1 września do 31 grudnia
-- sieja od 15 października do 31 grudnia
-- sandacz od 1 stycznia do 31 maja
-- sapy od 1 kwietnia do 31 maja
-- sum :
-a/ w rzece Odrze od ujścia rzeki Warty do granicy z wodami morskimi od 1 marca do
-31 maja
-b/ w pozostałych wodach od 1 listopada do 30 czerwca
-- szczupak od 1 stycznia do 30 kwietnia
-- świnka od 1 stycznia do 15 maja
-- troć :
-a/ w rzece Wiśle i jej dopływach powyŜej zapory we Włocławku od 1 października do
-31 grudnia; w pozostałym okresie obowiązuje zakaz połowu w czwartki, piątki, soboty
-i niedziele,
-b/ na odcinku rzeki Wisły od zapory we Włocławku do jej ujścia od 1 grudnia do
-końca lutego; w okresie od 1 marca do 31 sierpnia obowiązuje zakaz połowu w piątki,
-soboty i niedziele
-c/ w pozostałych rzekach od 1 października do 31 grudnia
-- troć jeziorowa od 1 września do 31 stycznia
-4. JeŜeli pierwszy lub ostatni dzień okresu ochronnego dla określonego gatunku ryb
-przypada w dzień ustawowo wolny od pracy okres ochronny ulega skróceniu o ten
-dzień.
-5. Zakazowi połowów wędkarskich podlegają następujące gatunki ryb prawnie
-chronionych:
-- alosa,
-- babka czarna, babka szczupła, babka czarnoplamka
-- babka mała,
-- babka piaskowa,
-- ciosa,
-- dennik,
-- głowacz pręgopłetwy, głowacz białopłetwy
-- iglicznia,
-- jesiotr zachodni,
-- kiełb białopłetwy,
-- kiełb Kesslera,
-- koza,
-- koza złotawa,
-- kur rogacz,
-- minogi - wszystkie gatunki
-- parposz,
-- piekielnica,
-- piskorz,
-- pocierniec,
-- róŜanka,
-- słonecznica
-- strzeble - wszystkie gatunki,
-- śliz,
-- węŜynka.
-6. Rak błotny i rak szlachetny nie mogą być przedmiotem amatorskiego połowu.
-7. Wprowadza się następujące limity ilościowe ryb do zabrania z łowisk :
-7.1. W ciągu tygodnia / od poniedziałku do niedzieli / :
-- głowacica 1 szt.
-7.2. W ciągu doby / w godz. 0.00 - 24.00 /
-- sum 1 szt.
-- troć jeziorowa, troć i łosoś / łącznie / 2 szt.
-- boleń, karp, lipień, pstrąg potokowy, amur biały, sandacz, szczupak, brzana /
-łącznie / 3 szt.
-- pstrąg tęczowy i pstrąg źródlany / łącznie / 4 szt.
-- sieja, węgorz, lin / łącznie / 4 szt.
-- świnka, certa / łącznie / 5 szt.
-- jaź, kleń / łącznie /10 szt.
-Łączna ilość złowionych i zabranych z łowisk ryb wymienionych gatunków nie moŜe
-przekroczyć 10 szt. w ciągu doby.
-8. Dopuszcza się zabranie z łowisk ryb innych gatunków nie wymienionych wyŜej, w
-ilościach nie przekraczających 5 kg w ciągu doby.
-9. Limity nie dotyczą krąpia, karasia srebrzystego i leszcza.
-10. Łowienie ryb podczas zawodów wędkarskich regulują odrębne przepisy zawarte
-w "Zasadach Organizacji Sportu Wędkarskiego".
-11. Uprawniony do rybactwa w obwodzie rybackim w uzasadnionych przypadkach
-ma prawo do zaostrzenia wymiarów, okresów ochronnych i limitów ilościowych ryb.
-10. KONTROLA I ODPOWIEDZIALNOŚĆ WĘDKUJĄCYCH W WODACH PZW
-§ 9
-1. Wędkarz łowiący ryby ma obowiązek poddać się kontroli prowadzonej przez :
-a/ funkcjonariuszy Policji,
-b/ funkcjonariuszy Państwowej StraŜy Rybackiej,
-c/ członków Społecznej StraŜy Rybackiej,
-d/ członków StraŜy Ochrony Mienia PZW,
-e/ członków Państwowej StraŜy Łowieckiej,
-f/ członków StraŜy Leśnej,
-g/ członków StraŜy Parków Narodowych i Krajobrazowych,
-h/ uprawnionych do rybactwa w obwodzie rybackim.
-2. Na Ŝądanie kontrolujących wędkarz ma obowiązek: okazać dokumenty, sprzęt
-wędkarski, złowione ryby i przynęty.
-3. Naruszenie niniejszego Regulaminu przez wędkarza pociąga za sobą
-konsekwencje wynikające z ustawy o rybactwie śródlądowym i Statutu PZW.
-11. INFORMACJE KOŃCOWE
-§ 10
-1. Do spraw regulowanych niniejszym Regulaminem mają zastosowanie przepisy
-Statutu Polskiego Związku Wędkarskiego, a takŜe obowiązującego powszechnie
-prawa, w tym:
-- Ustawy z dnia 18 lipca 2001 r. Prawo Wodne / Dz. U. Nr 115 poz. 1129, Dz. U. Nr
-154 poz. 1803 /,
-- Ustawy z dnia 27 kwietnia 2001 r. - Prawo o ochronie środowiska / Dz. U. Nr 62
-poz. 627 / i 27 lipca 2001 r. / Dz. U. Nr 100 poz. 1085 /,
-- Ustawy z dnia 18 kwietnia 1985 r. - o rybactwie śródlądowym / Dz. U. Nr 66 poz.
-750 z późniejszymi zmianami /,
-- Ustawy z dnia 7 kwietnia 1989 r. - Prawo o stowarzyszeniach / Dz. U. Nr 20 poz.
-104 z późniejszymi zmianami /,
-- Ustawy z dnia 28 września 1991 r. o lasach / Dz. U. Nr 101 poz. 444 z późniejszymi
-zmianami /,
-- Ustawy z dnia 16 października 1991 r. o ochronie przyrody / Dz. U. Nr 114 poz. 492
-z późniejszymi zmianami /,
-- Ustawy z dnia 21 sierpnia 1997 r. o ochronie zwierząt / Dz. U. Nr 111 poz. 724 z
-późniejszymi zmianami /,
-- Rozporządzenia Ministra środowiska z dnia 26 września 2001 r. w sprawie ochrony
-gatunkowej zwierząt / Dz. U. Nr 130 poz. 1456 /,
-- Rozporządzenia Ministra Ochrony środowiska, Zasobów Naturalnych i Leśnictwa z
-dnia 6 kwietnia 1995 r. w sprawie ochrony gatunkowej roślin / Dz. U. Nr 41 poz. 214
-/,
-- Rozporządzenia Ministra Rolnictwa i Rozwoju Wsi z dnia 12 listopada 2001 r. w
-sprawie połowu ryb oraz warunków chowu, hodowli i połowu innych organizmów
-Ŝyjących w wodzie / Dz. U. Nr 138 poz. 1559 z późniejszymi zmianami (Dz. U. nr 17
-poz. 160)/.
-2. Regulamin wchodzi w Ŝycie na mocy Uchwały Nr 37 Zarządu Głównego Polskiego
-Związku Wędkarskiego z dnia 29 marca 2003 r. </Text></ScrollView></SafeAreaView>
+          <SafeAreaView><ScrollView>{infoList.map((item) => (<Text style={{fontSize:12,alignSelf:'center', textAlign:'justify', margin:5,}}>{item.rule}</Text>))}</ScrollView></SafeAreaView>
         </View>
     );
   };

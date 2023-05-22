@@ -8,7 +8,16 @@ import {
   SafeAreaView,
   TouchableOpacity
 } from "react-native";
-export const Menu = ({ state, navigation }) => {
+
+
+export const Menu = ({navigation }) => {
+
+  const handleLogout = () => {
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'LoginPage' }],
+    });
+  };
   return (
     <SafeAreaView style={styles.menu}>
       <View style={styles.view}>
@@ -39,11 +48,8 @@ export const Menu = ({ state, navigation }) => {
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.rectanglePressable]}
-          onPress={() => {
-            navigation.navigate("LoginPage")
-          }
-          }>
-          <Text style={styles.logout}>Logout</Text>
+          onPress={handleLogout}>
+          <Text style={styles.logout}>Wyloguj</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -74,14 +80,15 @@ const styles = StyleSheet.create({
     margin: 5,
   },
   rectanglePressable: {
-    position: "relative",
-    borderRadius: 52,
+    marginVertical:500,
+    borderRadius: 40,
     backgroundColor: "#0000FF",
-    width: 140,
-    height: 50,
+    width: 150,
+    height: 55,
     justifyContent:'center',
     alignItems: "center",
-    top: "50%"
+    alignSelf:'center',
+    
   },
   iconPerson: {
     position: "relative",

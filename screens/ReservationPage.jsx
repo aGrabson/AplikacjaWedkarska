@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
-
+const handlePress = (event) => {
+  console.log('Native event:', event.nativeEvent);
+};
 const MapComponent = ({ location }) => {
+  
   return (
     <MapView
       style={styles.map}
@@ -16,7 +19,8 @@ const MapComponent = ({ location }) => {
       <Marker coordinate={location} 
         title="Suchedniów Zalew"
         description="Zalew o powierzchni lustra wody bliskiej 22 ha położony na rzece Kamionce. Zbiornik znajduje się w centrum miasta sąsiadując z parkiem miejskim. Charakterystyczną cechą tego zbiornika jest wyspa położona na środku zbiornika stanowiąca rezerwat ptactwa wodnego i chronionych gatunków zwierząt. Głębokość zbiornika jest niewielka, a dno jest w większości muliste. Przy zalewie działa Ośrodek Sportu i Rekreacji (OSiR), gdzie jest do dyspozycji baza noclegowa, kąpielisko z kilkunastometrową plażą, kort tenisowy, boisko do gry w siatkę plażową oraz wiele innych atrakcji. Zalew jest łowny z każdego miejsca, a wędkarze nie narzekają na efekty. Zbiornik słynie z dużych okazów karpi, amurów, sandaczy. Jest również dużo leszcza, lecz w większości skąpych rozmiarów, ale trafiają się i okazy w granicach 60 cm. Złowimy tu również obie odmiany karasia, płocie, wzdręgi, jazie, liny, okonie i sandacze. Więcej szczegółów na temat zbiornika można znaleźć w Kronice Koła, a efekty wędkujących w galerii zdjęć."
-      />
+        onPress={handlePress}
+      />  
     </MapView>
   );
 };
