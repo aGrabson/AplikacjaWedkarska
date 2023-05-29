@@ -1,11 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
-const handlePress = (event) => {
-  console.log('Native event:', event.nativeEvent);
-};
-const MapComponent = ({ location }) => {
-  
+import { auth, db } from "../firebase.js";
+
+const MapComponent = ({ location, navigation }) => {
+  const [markerPressCount, setMarkerPressCount] = useState(0);
+  const [fishingSpots, setFishingSpots] = useState([]);
+  const [selectedMarkerTitle, setSelectedMarkerTitle] = useState('');
+
+
+  useEffect(() => {
+
+    const fetchFishingSpots = async () => {
+      try {
+        const docRef = db.collection("fishingSpots");
+        const doc = await docRef.get();
+        const fishingSpots = doc.docs.map(doc => doc.data());
+        setFishingSpots(fishingSpots)
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchFishingSpots();
+  }, []);
+
+  useEffect(() => {
+    if (markerPressCount % 2 === 0 && markerPressCount !== 0) {
+      navigation.navigate('ReservePage', { markerTitle: selectedMarkerTitle });
+
+    } 
+  }, [markerPressCount, navigation]);
+
+  const handlePress = (Title) => {
+    setMarkerPressCount(count => count + 1);
+    setSelectedMarkerTitle(Title);
+  };
+
+  const handleMapPress = () => {
+    setMarkerPressCount(0);
+  };
   return (
     <MapView
       style={styles.map}
@@ -15,17 +49,28 @@ const MapComponent = ({ location }) => {
         latitudeDelta: 0.1,
         longitudeDelta: 0.1,
       }}
-    >
-      <Marker coordinate={location} 
-        title="Suchedniów Zalew"
-        description="Zalew o powierzchni lustra wody bliskiej 22 ha położony na rzece Kamionce. Zbiornik znajduje się w centrum miasta sąsiadując z parkiem miejskim. Charakterystyczną cechą tego zbiornika jest wyspa położona na środku zbiornika stanowiąca rezerwat ptactwa wodnego i chronionych gatunków zwierząt. Głębokość zbiornika jest niewielka, a dno jest w większości muliste. Przy zalewie działa Ośrodek Sportu i Rekreacji (OSiR), gdzie jest do dyspozycji baza noclegowa, kąpielisko z kilkunastometrową plażą, kort tenisowy, boisko do gry w siatkę plażową oraz wiele innych atrakcji. Zalew jest łowny z każdego miejsca, a wędkarze nie narzekają na efekty. Zbiornik słynie z dużych okazów karpi, amurów, sandaczy. Jest również dużo leszcza, lecz w większości skąpych rozmiarów, ale trafiają się i okazy w granicach 60 cm. Złowimy tu również obie odmiany karasia, płocie, wzdręgi, jazie, liny, okonie i sandacze. Więcej szczegółów na temat zbiornika można znaleźć w Kronice Koła, a efekty wędkujących w galerii zdjęć."
-        onPress={handlePress}
-      />  
+    
+      onPress={handleMapPress}>
+      {fishingSpots.map(spot => {
+
+        return (
+          <Marker
+            key={spot.Title}
+            coordinate={{
+              latitude: spot.Latitude,
+              longitude: spot.Longitude,
+            }}
+            title={spot.Title}
+            description={spot.Description}
+            onPress={() => handlePress(spot.Title)}
+          />
+        );
+      })}
     </MapView>
   );
 };
 
-export const ReservationPage = () => {
+export const ReservationPage = ({ navigation }) => {
   const [location, setLocation] = useState({
     latitude: 51.043444,
     longitude: 20.843153,
@@ -44,17 +89,10 @@ export const ReservationPage = () => {
       console.error(error);
     }
   };
-
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.searchInput}
-        onChangeText={setSearchQuery}
-        value={searchQuery}
-        placeholder="Enter location name"
-        onSubmitEditing={handleSearch}
-      />
-      <MapComponent location={location} />
+      
+      <MapComponent location={location} navigation={navigation} style={{ flex: 1 }}/>
     </View>
   );
 };
@@ -65,15 +103,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  searchInput: {
-    height: 40,
-    borderWidth: 1,
-    padding: 10,
-    width: '80%',
-    marginBottom: 10,
-  },
   map: {
     width: '100%',
-    height: '80%',
+    height: '100%',
   },
 });

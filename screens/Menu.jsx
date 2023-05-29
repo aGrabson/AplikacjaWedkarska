@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useEffect, useState } from "react";
 import {
   Text,
   StyleSheet,
@@ -8,9 +9,29 @@ import {
   SafeAreaView,
   TouchableOpacity
 } from "react-native";
+import { auth, db } from "../firebase.js";
 
+export const Menu = ({ navigation }) => {
+  const [isController, setIsController] = useState(false);
 
-export const Menu = ({navigation }) => {
+  useEffect(() => {
+    const checkIsController = async () => {
+      try {
+        const user = auth.currentUser;
+        if (user) {
+          const uid = user.uid;
+          const userRef = db.collection("users").doc(uid);
+          const userDoc = await userRef.get();
+          const userData = userDoc.data();
+          setIsController(userData.isController || false);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    checkIsController();
+  }, []);
 
   const handleLogout = () => {
     navigation.reset({
@@ -18,6 +39,7 @@ export const Menu = ({navigation }) => {
       routes: [{ name: 'LoginPage' }],
     });
   };
+
   return (
     <SafeAreaView style={styles.menu}>
       <View style={styles.view}>
@@ -41,19 +63,20 @@ export const Menu = ({navigation }) => {
             <Text style={[styles.settings]}>Regulamin</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.settings1]} onPress={() => navigation.navigate("InspectPage")}>
-          <View style={{ flexDirection: 'row' }}>
-            <Text style={[styles.settings]}>Kontrola</Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.rectanglePressable]}
-          onPress={handleLogout}>
-          <Text style={styles.logout}>Wyloguj</Text>
-        </TouchableOpacity>
+        {isController && (
+          <TouchableOpacity style={[styles.settings1]} onPress={() => navigation.navigate("InspectPage")}>
+            <View style={{ flexDirection: 'row' }}>
+              <Text style={[styles.settings]}>Kontrola</Text>
+            </View>
+          </TouchableOpacity>
+        )}
+        <View style={styles.logoutContainer}>
+          <TouchableOpacity style={styles.rectanglePressable} onPress={handleLogout}>
+            <Text style={styles.logout}>Wyloguj</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </SafeAreaView>
-
   );
 };
 
@@ -69,39 +92,23 @@ const styles = StyleSheet.create({
     margin: 5,
     left: "2%",
   },
-  iconSettings: {
-    maxWidth: "100%",
-    overflow: "hidden",
-    maxHeight: "100%",
-  },
   settings1: {
     position: "relative",
     paddingVertical: 1,
     margin: 5,
   },
+  logoutContainer: {
+    position: "absolute",
+    bottom: 30,
+    alignSelf: "center",
+  },
   rectanglePressable: {
-    marginVertical:500,
     borderRadius: 40,
     backgroundColor: "#0000FF",
     width: 150,
     height: 55,
-    justifyContent:'center',
+    justifyContent: 'center',
     alignItems: "center",
-    alignSelf:'center',
-    
-  },
-  iconPerson: {
-    position: "relative",
-    paddingTop: 10,
-    maxWidth: "100%",
-    overflow: "hidden",
-    maxHeight: "100%",
-  },
-  helloUser: {
-    position: "relative",
-    fontSize: 24,
-    color: "#000",
-    textAlign: "left",
   },
   logout: {
     fontSize: 20,
@@ -116,6 +123,5 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     overflow: "hidden",
-
   },
 });

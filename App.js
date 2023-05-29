@@ -34,11 +34,11 @@ function DrawerRoot({navigation}) {
                 source={require("./src/image.jpg")}>
               </Image>
             ),}}/>
-        <Drawer.Screen name="ReservationPage" component={ReservationPage} options={{headerTitle: () => (<View><TextInput placeholder='Wyszukaj łowisko' style={{fontSize:20, borderColor:'#EBEBEB'}}></TextInput><TouchableOpacity onPress={() => navigation.navigate("ReservePage")}><Text style={{fontSize:20}}>Przejdź do</Text></TouchableOpacity></View>)}}/>
+        <Drawer.Screen name="ReservationPage" component={ReservationPage} options={{headerTitle: () => (<View><TextInput placeholder='Wyszukaj łowisko' style={{fontSize:20, borderColor:'#EBEBEB'}}></TextInput><TouchableOpacity onPress={() => navigation.navigate("ReservePage")}></TouchableOpacity></View>)}}/>
         <Drawer.Screen name="RulesPage" component={RulesPage} options={{headerTitle: () => (<View><Text style={{fontSize:28, color:'#0F4C8A'}}>Regulamin</Text></View>)}}/>
-        <Drawer.Screen name="ReservePage" component={ReservePage} options={{headerTitle: () => (<View><Text style={{fontSize:24, color:'#0F4C8A', }}>       Rezerwacja{"\n"} Łowisko "Suchedniów"</Text></View>)}}/>
-        <Drawer.Screen name="InspectPage" component={InspectPage} options={{headerTitle: () => (<View><TextInput placeholder='Wyszukaj łowisko' style={{fontSize:20, borderColor:'#EBEBEB'}}></TextInput><TouchableOpacity onPress={() => navigation.navigate("InspectionInfoPage")}><Text style={{fontSize:20}}>Przejdź do</Text></TouchableOpacity></View>)}}/>
-        <Drawer.Screen name="InspectionInfoPage" component={InspectionInfoPage} options={{headerTitle: () => (<View><TextInput placeholder='Wyszukaj wędkarza' style={{fontSize:20, borderColor:'#EBEBEB'}}></TextInput><TouchableOpacity onPress={() => navigation.navigate("InspectUserPage")}><Text style={{fontSize:20}}>Przejdź do</Text></TouchableOpacity></View>)}}/>
+        <Drawer.Screen name="ReservePage" component={ReservePage} options={{headerTitle: () => (<View><Text style={{fontSize:24, color:'#0F4C8A', textAlign:'center' }}>Rezerwacja{"\n"}"</Text></View>)}}/>
+        <Drawer.Screen name="InspectPage" component={InspectPage} options={{headerTitle: () => (<View><TextInput placeholder='Wyszukaj łowisko' style={{fontSize:20, borderColor:'#EBEBEB'}}></TextInput><TouchableOpacity onPress={() => navigation.navigate("InspectionInfoPage")}></TouchableOpacity></View>)}}/>
+        <Drawer.Screen name="InspectionInfoPage" component={InspectionInfoPage} options={{headerTitle: () => (<View><TextInput placeholder='Wyszukaj wędkarza' style={{fontSize:20, borderColor:'#EBEBEB'}}></TextInput><TouchableOpacity onPress={() => navigation.navigate("InspectUserPage")}></TouchableOpacity></View>)}}/>
         <Drawer.Screen name="InspectUserPage" component={InspectUserPage} options={{headerTitle:'Działania dot. wędkarza'}}/>
       </Drawer.Navigator>
   );
