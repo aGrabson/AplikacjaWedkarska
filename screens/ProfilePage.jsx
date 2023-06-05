@@ -99,7 +99,7 @@ export const ProfilePage = ({ navigation }) => {
           </View>
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.button} onPress={handleEditButton}>
-              <Text style={styles.buttonText}>{editMode ? 'Save' : 'Edit'}</Text>
+              <Text style={styles.buttonText}>{editMode ? 'Zapisz' : 'Edytuj'}</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
