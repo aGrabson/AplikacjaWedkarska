@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Alert } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { auth, db } from "../firebase.js";
+import { parse } from 'date-fns';
 
 const MapComponent = ({ location, navigation }) => {
   const [markerPressCount, setMarkerPressCount] = useState(0);
@@ -40,6 +41,61 @@ const MapComponent = ({ location, navigation }) => {
   const handleMapPress = () => {
     setMarkerPressCount(0);
   };
+
+  const updateReservationStatus = async (reservation, reservationId) => {
+    //const reservationDate = new Date(reservation.Date + ' ' + reservation.Hour);
+    const reservationDate = parse(reservation.Date + ' ' + reservation.Hour, 'dd.MM.yyyy HH:mm', new Date());
+    const currentDate = new Date();
+
+  // Dodaj 24 godziny do rezerwacji
+  const reservationPlus24Hours = new Date(reservationDate.getTime()  + (24 * 60 * 60 * 1000));
+  // Odejmij 24 godziny od rezerwacji
+  const reservationMinus24Hours = new Date(reservationDate.getTime() - (24 * 60 * 60 * 1000));
+
+  if (reservationPlus24Hours < currentDate || currentDate > reservationMinus24Hours) {
+      try {
+        await db.collection('reservations').doc(reservationId).update({
+          Status: 'Inactive',
+          
+        })
+        
+      } catch (error) {
+        console.error('Error updating reservation status:', error);
+      }
+    }
+    else{
+      try {
+        await db.collection('reservations').doc(reservationId).update({
+          Status: 'Active',
+          
+        })
+        
+      } catch (error) {
+        console.error('Error updating reservation status:', error);
+      }
+    }
+  };
+  
+
+  useEffect(() => {
+    const fetchReservations = async () => {
+      try {
+        const reservationsRef = db.collection('reservations');
+        const querySnapshot = await reservationsRef.get();
+
+        querySnapshot.forEach((doc) => {
+          const reservation = doc.data();
+          const reservationId = doc.id;
+          updateReservationStatus(reservation,reservationId);
+
+        });
+      } catch (error) {
+        console.error('Error fetching reservations:', error);
+      }
+    };
+
+    fetchReservations();
+  }, []);
 
   return (
     <MapView

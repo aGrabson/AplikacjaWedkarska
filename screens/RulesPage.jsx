@@ -6,6 +6,8 @@ import {
   collection,
   getDocs,
 } from "firebase/firestore";
+import { LogBox } from 'react-native';
+LogBox.ignoreAllLogs();
 
 
 export const RulesPage = ({navigation}) => {

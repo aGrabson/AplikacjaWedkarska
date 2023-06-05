@@ -2,12 +2,22 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
 import { auth, db } from '../firebase.js';
 
-const Table = ({ userData }) => {
+const Table = ({ userData, navigation }) => {
+  const handleUserPress = (reservationId) => {
+    navigation.navigate('InspectUserPage', { ReservationId: reservationId });
+  };
+
   const renderItem = ({ item }) => (
     <View style={{ flexDirection: 'row', paddingVertical: 10 }}>
-      <TouchableOpacity style={{ flex: 1 }}>{item.Firstname}</TouchableOpacity>
-      <TouchableOpacity style={{ flex: 1 }}>{item.Surname}</TouchableOpacity>
-      <TouchableOpacity style={{ flex: 1 }}>{item.CardNumber}</TouchableOpacity>
+      <TouchableOpacity style={{ flex: 1 }} onPress={() => handleUserPress(item.ReservationID)}>
+        <Text>{item.Firstname}</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={{ flex: 1 }} onPress={() => handleUserPress(item.ReservationID)}>
+        <Text>{item.Surname}</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={{ flex: 1 }} onPress={() => handleUserPress(item.ReservationID)}>
+        <Text>{item.CardNumber}</Text>
+      </TouchableOpacity>
     </View>
   );
 
@@ -61,9 +71,7 @@ export const InspectionInfoPage = ({ navigation, route }) => {
             ReservationID: reservationsIds[index],
             CardNumber: usersData[index].cardNumber,
           }));
-    
-          
-          console.log(updatedReservations)
+
           setUserData(updatedReservations);
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -75,9 +83,9 @@ export const InspectionInfoPage = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.middleText}>Lista wędkarzy na łowisku {markerTitle}</Text>
+      <Text style={styles.middleText}>Lista wędkarzy na łowisku <Text>{markerTitle}</Text></Text>
       <View>
-        <Table userData={userData} />
+      <Table userData={userData} navigation={navigation} />
       </View>
     </View>
   );
