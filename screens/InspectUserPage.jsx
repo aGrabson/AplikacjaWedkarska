@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { auth, db } from '../firebase.js';
@@ -65,7 +65,10 @@ export const InspectUserPage = ({ navigation, route }) => {
       .add(controlData)
       .then(() => {
         setComments('');
-        navigation.navigate('MainPage');
+        Alert.alert('Sukces', 'Kontrola została dodana pomyślnie!', [
+          { text: 'OK', onPress: () => navigation.navigate('MainPage') }
+        ]);
+        
       })
       .catch((error) => {
         console.error('Error creating Control document:', error);

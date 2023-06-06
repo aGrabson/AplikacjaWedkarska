@@ -50,9 +50,6 @@ const MapComponent = ({ location, navigation }) => {
   const reservationPlus24Hours = new Date(reservationDate.getTime()  + (24 * 60 * 60 * 1000));
   // Odejmij 24 godziny od rezerwacji
   const currentMinus24H = new Date(currentDate.getTime() - (24 * 60 * 60 * 1000));
-  console.log(reservationDate)
-  console.log(currentMinus24H)
-  console.log(currentDate)
   if (reservationDate > currentMinus24H && reservationDate < currentDate ) {
       try {
         await db.collection('reservations').doc(reservationId).update({
