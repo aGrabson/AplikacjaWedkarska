@@ -49,7 +49,6 @@ export const RulesPage = ({navigation}) => {
 
     return (
         <View style={styles.container}>
-          <Text style={{color:'#0F4C8A',fontSize:20,alignSelf:'center'}}>Regulamin amatorskiego połowu ryb</Text>
           <SafeAreaView><ScrollView>{infoList.map((item) => (<Text style={{fontSize:12,alignSelf:'center', textAlign:'justify', margin:5,}}>{item.rule}</Text>))}</ScrollView></SafeAreaView>
         </View>
     );

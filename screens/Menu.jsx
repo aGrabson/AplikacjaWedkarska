@@ -3,34 +3,27 @@ import { useEffect, useState } from "react";
 import {
   Text,
   StyleSheet,
-  Pressable,
-  Image,
   View,
   SafeAreaView,
   TouchableOpacity
 } from "react-native";
-import { auth, db } from "../firebase.js";
+import { getRoleFromToken } from "../credentials/Token.jsx";
+import { getAuthData } from "../credentials/Store.jsx";
 
 export const Menu = ({ navigation }) => {
   const [isController, setIsController] = useState(false);
 
+  const getRole = async () => {
+    const authData = await getAuthData()
+    const role = await getRoleFromToken(authData.accessToken);
+    if(role == 2)
+    {
+      setIsController(true);
+    }
+  }
+ 
   useEffect(() => {
-    const checkIsController = async () => {
-      try {
-        const user = auth.currentUser;
-        if (user) {
-          const uid = user.uid;
-          const userRef = db.collection("users").doc(uid);
-          const userDoc = await userRef.get();
-          const userData = userDoc.data();
-          setIsController(userData.isController || false);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    checkIsController();
+    getRole();
   }, []);
 
   const handleLogout = () => {

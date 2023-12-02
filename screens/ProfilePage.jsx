@@ -1,142 +1,188 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, ImageBackground, View, TextInput, SafeAreaView, TouchableOpacity, Alert } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
-import { auth, db } from '../firebase.js';
-
+import React, { useState, useEffect } from "react";
+import {
+  StyleSheet,
+  Text,
+  ScrollView,
+  View,
+  TextInput,
+  SafeAreaView,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
+import { StatusBar } from "expo-status-bar";
+import { GetUserInfo, UpdateUserInfo } from "../Controllers/AccountController";
+import { LoadingModal } from "../components/LoadingModal.jsx";
 export const ProfilePage = ({ navigation }) => {
-  const [editMode, setEditMode] = useState(false); // State variable for edit mode
-
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [firstname, setFirstname] = useState('');
-  const [surname, setSurname] = useState('');
-  const [cardNumber, setCardNumber] = useState('');
-  const [dateOfBirth, setDateOfBirth] = useState(new Date());
-
-  const uid = auth.currentUser?.uid;
-  const [data, setData] = useState({});
-  const fetchUser = async () => {
-    try {
-      const docRef = db.collection('users').doc(uid);
-      const doc = await docRef.get();
-
-      const userData = doc.data();
-      setData(userData);
-      setEmail(userData.email);
-      setFirstname(userData.firstname);
-      setSurname(userData.surname);
-      setCardNumber(userData.cardNumber);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const [editMode, setEditMode] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [profileData, setProfileData] = useState({
+    name: "",
+    surname: "",
+    email: "",
+    cardNumber: "",
+  });
+  const [errors, setErrors] = useState({
+    name: "",
+    surname: "",
+    email: "",
+  });
 
   useEffect(() => {
-    fetchUser();
+    FetchData();
   }, []);
+
+  const FetchData = async () => {
+    setIsLoading(true);
+    const data = await GetUserInfo();
+    console.log(data);
+    if (data === null) {
+      return;
+    }
+    if (data !== null) setProfileData(data);
+    setIsLoading(false);
+  };
 
   const handleEditButton = async () => {
     if (editMode) {
-      // Save changes to Firebase
-      try {
-        const docRef = db.collection('users').doc(uid);
-        await docRef.update({
-          firstname,
-          surname,
-          email,
-          cardNumber,
+      if (!profileData.name || !profileData.surname || !profileData.email) {
+        setErrors({
+          name: !profileData.name ? "Pole wymagane" : "",
+          surname: !profileData.surname ? "Pole wymagane" : "",
+          email: !profileData.email ? "Pole wymagane" : "",
         });
-        Alert.alert('Sukces', 'Zauktualizowano dane!');
-      } catch (error) {
-        console.error('Error updating data:', error);
+        return
+      }
+      else{
+        setLoading(true);
+        await UpdateUserInfo(profileData, setEditMode);
+        setLoading(false);
       }
     }
-
-    setEditMode(!editMode); // Toggle edit mode
+    else setEditMode(true)
   };
 
   return (
     <View style={styles.container}>
+      <StatusBar />
       <SafeAreaView style={styles.area}>
         <ScrollView style={styles.scrollView}>
-          <View style={styles.middleContainers}>
-            <Text style={styles.texts}>Imię:</Text>
-            <TextInput
-              editable={editMode}
-              placeholder="Wpisz Imię"
-              style={styles.Inputs}
-              value={firstname}
-              onChangeText={(text) => setFirstname(text)}
+          {isLoading ? (
+            <ActivityIndicator
+              size="large"
+              style={{ justifyContent: "center", alignSelf: "center" }}
             />
-          </View>
-          <View style={styles.middleContainers}>
-            <Text style={styles.texts}>Nazwisko:</Text>
-            <TextInput
-              editable={editMode}
-              placeholder="Wpisz Nazwisko"
-              style={styles.Inputs}
-              value={surname}
-              onChangeText={(text) => setSurname(text)}
-            />
-          </View>
-          <View style={styles.middleContainers}>
-            <Text style={styles.texts}>Email:</Text>
-            <TextInput
-              editable={editMode}
-              placeholder="Wpisz Email"
-              style={styles.Inputs}
-              value={email}
-              onChangeText={(text) => setEmail(text)}
-            />
-          </View>
-          <View style={styles.middleContainers}>
-            <Text style={styles.texts}>Numer karty:</Text>
-            <TextInput
-              editable={false}
-              style={styles.Inputs}
-              value={cardNumber}
-            />
-          </View>
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} onPress={handleEditButton}>
-              <Text style={styles.buttonText}>{editMode ? 'Zapisz' : 'Edytuj'}</Text>
-            </TouchableOpacity>
-          </View>
+          ) : (
+            <>
+              <View style={styles.middleContainers}>
+                <Text style={styles.texts}>Imię:</Text>
+                <TextInput
+                  editable={editMode}
+                  placeholder="Wpisz Imię"
+                  style={[styles.Inputs, errors.name && styles.errorInput]}
+                  value={profileData.name}
+                  onChangeText={(text) => {
+                    setProfileData({ ...profileData, name: text });
+                    setErrors({ ...errors, name: "" });
+                  }}
+                />
+                <Text style={styles.errorText}>{errors.name}</Text>
+              </View>
+              <View style={styles.middleContainers}>
+                <Text style={styles.texts}>Nazwisko:</Text>
+                <TextInput
+                  editable={editMode}
+                  placeholder="Wpisz Nazwisko"
+                  style={[styles.Inputs, errors.surname && styles.errorInput]}
+                  value={profileData.surname}
+                  onChangeText={(text) => {
+                    setProfileData({ ...profileData, surname: text });
+                    setErrors({ ...errors, surname: "" });
+                  }}
+                />
+                <Text style={styles.errorText}>{errors.surname}</Text>
+              </View>
+              <View style={styles.middleContainers}>
+                <Text style={styles.texts}>Email:</Text>
+                <TextInput
+                  editable={editMode}
+                  placeholder="Wpisz Email"
+                  style={[styles.Inputs, errors.email && styles.errorInput]}
+                  value={profileData.email}
+                  onChangeText={(text) => {
+                    setProfileData({ ...profileData, email: text });
+                    setErrors({ ...errors, email: "" });
+                  }}
+                />
+                <Text style={styles.errorText}>{errors.email}</Text>
+              </View>
+              <View style={styles.middleContainers}>
+                <Text style={styles.texts}>Numer karty:</Text>
+                <TextInput
+                  editable={false}
+                  style={styles.Inputs}
+                  value={profileData.cardNumber}
+                />
+              </View>
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={handleEditButton}
+                >
+                  <Text style={styles.buttonText}>
+                    {editMode ? "Zapisz" : "Edytuj"}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          )}
         </ScrollView>
+        <LoadingModal visible={loading} text={"Aktualizuje dane..."} />
       </SafeAreaView>
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    width: '100%',
-    height: '100%',
+    backgroundColor: "#fff",
+    width: "100%",
+    height: "100%",
+  },
+  errorText: {
+    color: "red",
+    fontSize: 12,
+    marginVertical: 4,
+    marginHorizontal: 4,
   },
   background: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
   },
   bottomContainer: {
-    position: 'relative',
-    marginTop: '100%',
-    width: '100%',
-    height: '50%',
+    position: "relative",
+    marginTop: "100%",
+    width: "100%",
+    height: "50%",
   },
   buttonText: {
-    color: 'white',
+    color: "white",
     fontSize: 17,
   },
   Inputs: {
-    width: '100%',
+    width: "100%",
     height: 50,
     borderRadius: 38,
     fontSize: 20,
     padding: 10,
-    backgroundColor: '#EBEBEB',
-    alignSelf: 'center',
-    display: 'flex',
+    backgroundColor: "#EBEBEB",
+    alignSelf: "center",
+    display: "flex",
+  },
+  errorInput: {
+    borderColor: "red",
+    borderWidth: 1,
   },
   area: {
     marginTop: 32,
@@ -146,20 +192,21 @@ const styles = StyleSheet.create({
     marginStart: 16,
   },
   scrollView: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
   },
   middleContainers: {
-    alignSelf: 'center',
-    width: '80%',
+    alignSelf: "center",
+    width: "80%",
     height: 80,
+    marginVertical: 12,
   },
   buttonContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 20,
   },
   button: {
-    backgroundColor: '#0000FF',
+    backgroundColor: "#0000FF",
     padding: 10,
     borderRadius: 5,
   },
