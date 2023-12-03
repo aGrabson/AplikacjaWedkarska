@@ -12,6 +12,8 @@ import { ReservationPage } from './screens/ReservationPage';
 import { RulesPage } from './screens/RulesPage';
 import { ReservePage } from './screens/ReservePage';
 import { InspectPage } from './screens/InspectPage';
+import { ListOfReservationsPage } from './screens/ListOfReservationsPage'
+import { ReservationDetailsPage } from './screens/ReservationDetailsPage'
 import { InspectionInfoPage } from './screens/InspectionInfoPage';
 import { InspectUserPage } from './screens/InspectUserPage';
 import { IconRegistry, ApplicationProvider } from '@ui-kitten/components';
@@ -19,9 +21,10 @@ import MIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import * as eva from "@eva-design/eva";
 import { StyleSheet} from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import {Text, TouchableOpacity, View, Image, TextInput, Icon} from 'react-native';
+import {Text, TouchableOpacity, View, TextInput} from 'react-native';
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
+const ReservationStack = createNativeStackNavigator();
 
 function DrawerRoot({navigation}) {
   const [searchText, setSearchText] = useState('');
@@ -31,6 +34,8 @@ function DrawerRoot({navigation}) {
         <Drawer.Screen name="ProfilePage" component={ProfilePage} options={{unmountOnBlur: true, headerTitle: () => (<View><Text style={{fontSize:28, color:'#0F4C8A'}}>Mój Profil</Text></View>)}}/>
         <Drawer.Screen name="ReservationPage" component={ReservationPage} options={{unmountOnBlur: true, headerTitle: () => (<View><TextInput placeholder='Wyszukaj łowisko' style={{fontSize:20, borderColor:'#EBEBEB'}}></TextInput><TouchableOpacity onPress={() => navigation.navigate("ReservePage")}></TouchableOpacity></View>)}}/>
         <Drawer.Screen name="RulesPage" component={RulesPage} options={{unmountOnBlur: true, headerTitle: () => (<View><Text style={{fontSize:28, color:'#0F4C8A'}}>Regulamin</Text></View>)}}/>
+        <Drawer.Screen name="ListOfReservationsPage" component={ListOfReservationsPage} options={{unmountOnBlur: true, headerTitle: () => (<View><Text style={{fontSize:28, color:'#0F4C8A'}}>Lista rezerwacji</Text></View>)}}/>
+        <Drawer.Screen name="ReservationDetailsPage" component={ReservationDetailsPage} options={{unmountOnBlur: true, headerTitle: () => (<View><Text style={{fontSize:28, color:'#0F4C8A'}}>Szczegóły rezerwacji</Text></View>)}}/>
         <Drawer.Screen name="ReservePage" component={ReservePage} options={{unmountOnBlur: true, headerTitle: () => (<View><Text style={{fontSize:24, color:'#0F4C8A', textAlign:'center' }}>Rezerwacja{"\n"}"</Text></View>)}}/>
         <Drawer.Screen name="InspectPage" component={InspectPage} options={{unmountOnBlur: true, headerTitle: () => (<View><TextInput placeholder='Wyszukaj łowisko' style={{fontSize:20, borderColor:'#EBEBEB'}}></TextInput><TouchableOpacity onPress={() => navigation.navigate("InspectionInfoPage")}></TouchableOpacity></View>)}}/>
         <Drawer.Screen name="InspectionInfoPage" component={InspectionInfoPage} options={{unmountOnBlur: true, headerTitle: () => (<View><TextInput placeholder='Wyszukaj wędkarza' style={{fontSize:20, borderColor:'#EBEBEB'}}></TextInput><TouchableOpacity onPress={() => navigation.navigate("InspectUserPage")}></TouchableOpacity></View>)}}/>
@@ -38,6 +43,25 @@ function DrawerRoot({navigation}) {
       </Drawer.Navigator>
   );
 }
+export const ReservationStackNavigator = () => {
+  return (
+    <ReservationStack.Navigator initialRouteName="ListOfReservationsPage">
+      <ReservationStack.Screen
+        name="ListOfReservationsPage"
+        component={ListOfReservationsPage}
+        options={{ headerTitle: "" }}
+      />
+      <ReservationStack.Screen
+        name="ReservationDetailsPage"
+        component={OrderDetailsPage}
+        options={{
+          headerTitle: "Szczegóły zlecenia",
+          headerTintColor: "#989898",
+        }}
+      />
+    </ReservationStack.Navigator>
+  );
+};
 
 export default function App() {
 

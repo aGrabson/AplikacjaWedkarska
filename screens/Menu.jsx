@@ -46,6 +46,11 @@ export const Menu = ({ navigation }) => {
             <Text style={[styles.settings]}>Mój Profil</Text>
           </View>
         </TouchableOpacity>
+        <TouchableOpacity style={[styles.settings1]} onPress={() => navigation.navigate("ListOfReservationsPage")}>
+          <View style={{ flexDirection: 'row' }}>
+            <Text style={[styles.settings]}>Moje rezerwacje</Text>
+          </View>
+        </TouchableOpacity>
         <TouchableOpacity style={[styles.settings1]} onPress={() => navigation.navigate("ReservationPage")}>
           <View style={{ flexDirection: 'row' }}>
             <Text style={[styles.settings]}>Rezerwacja</Text>
@@ -56,6 +61,7 @@ export const Menu = ({ navigation }) => {
             <Text style={[styles.settings]}>Regulamin</Text>
           </View>
         </TouchableOpacity>
+        
         {isController && (
           <TouchableOpacity style={[styles.settings1]} onPress={() => navigation.navigate("InspectPage")}>
             <View style={{ flexDirection: 'row' }}>
@@ -63,11 +69,11 @@ export const Menu = ({ navigation }) => {
             </View>
           </TouchableOpacity>
         )}
-        <View style={styles.logoutContainer}>
-          <TouchableOpacity style={styles.rectanglePressable} onPress={handleLogout}>
-            <Text style={styles.logout}>Wyloguj</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity style={[styles.settings1]} onPress={handleLogout}>
+          <View style={{ flexDirection: 'row' }}>
+            <Text style={[styles.settings]}>Wyloguj</Text>
+          </View>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -102,11 +108,6 @@ const styles = StyleSheet.create({
     height: 55,
     justifyContent: 'center',
     alignItems: "center",
-  },
-  logout: {
-    fontSize: 20,
-    color: "#FFFFFF",
-    textAlign: "center",
   },
   view: {
     position: "relative",

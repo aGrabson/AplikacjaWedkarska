@@ -83,7 +83,6 @@ export const GetUserInfo = async () => {
   const gateway = new AccountService();
   const response = await gateway.GetUserInfo();
   if (response.status === 200) {
-    console.log(response.data)
     return response.data;
   } else if (response.status === 404 || response.status === 400) {
     Alert.alert(
@@ -99,7 +98,6 @@ export const UpdateUserInfo = async (profileData, setEditMode) => {
   const response = await gateway.UpdateUserInfo(profileData);
   if (response.status === 200) {
     setEditMode(false);
-    console.log(response.data)
     return response.data;
   } else if (response.status === 404 || response.status === 400) {
     Alert.alert(
