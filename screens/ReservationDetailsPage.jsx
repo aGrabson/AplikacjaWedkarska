@@ -5,16 +5,32 @@ import {
   SafeAreaView,
   View,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import fishIcon from "../src/fish.png";
 import { ReservationDetails } from "../components/ReservationDetails";
-import { GetReservationDetails } from "../Controllers/ReservationController";
+import {
+  GetReservationDetails,
+  GetUserFishes,
+  ReleaseFish,
+} from "../Controllers/ReservationController";
+import { StatusBar } from "expo-status-bar";
+import { AddFishModal } from "../components/AddFishModal";
+import { GetFishList } from "../Controllers/ReservationController";
+import { AddToReservation } from "../Controllers/ReservationController";
 
 export const ReservationDetailsPage = ({ navigation, route }) => {
   const id = route.params.Id;
-
+  const [isFishListEditable, setIsFishListEditable] = useState(false);
   const [reservation, setReservation] = useState({});
+
+  const [fishList, setFishList] = useState([]);
+  const [fishesList, setFishesList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [nokill, setNoKill] = useState(null);
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [fishData, setFishData] = useState({ reservationId: id });
+
   const formatDate = (date) => {
     const utcDate = new Date(date);
     const localDate = new Intl.DateTimeFormat("pl-PL", {
@@ -40,8 +56,67 @@ export const ReservationDetailsPage = ({ navigation, route }) => {
   const FetchData = async () => {
     setIsLoading(true);
     const data = await GetReservationDetails(id);
-    if (data !== null) setReservation(data);
+    const fishesData = await GetUserFishes(id);
+    const fishesList = await GetFishList();
+    if (fishesData !== null) {
+      setFishList(fishesData);
+    }
+    if (fishesList !== null) {
+      setFishesList(fishesList);
+      setFishData((prev) => ({...prev, selectedFish: fishesList[0].id}));
+    }
+    if (data !== null) {
+      setReservation(data);
+      {
+        data.fishingSpot.catchAndRelease ? setNoKill(true) : setNoKill(false);
+      }
+      {
+        data.isActive
+          ? setIsFishListEditable(true)
+          : setIsFishListEditable(false);
+      }
+    }
     setIsLoading(false);
+  };
+  const AddToReservationList = async () => {
+    await AddToReservation(fishData);
+    closeModal();
+    FetchData();
+  };
+
+  const onPressMinus = async (fishId) => {
+    Alert.alert(
+      "Potwierdzenie",
+      "Czy na pewno chcesz usunąć rybę?",
+      [
+        {
+          text: "Tak",
+          onPress: async () => {
+            await ReleaseFish(fishId, id);
+            FetchData();
+          },
+        },
+        {
+          text: "Nie",
+          style: "cancel",
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
+  const handlePressImage = async (fromWhatButton) => {
+    if (fromWhatButton == "fromMinus") {
+      console.log("gb");
+    } else if (fromWhatButton == "fromPlus") {
+      console.log("gb2");
+      setModalOpen(true);
+    }
+  };
+
+  const closeModal = () => {
+    setFishData({ reservationId: id });
+    setModalOpen(false);
   };
 
   return (
@@ -53,6 +128,7 @@ export const ReservationDetailsPage = ({ navigation, route }) => {
         backgroundColor: "white",
       }}
     >
+      <StatusBar></StatusBar>
       {isLoading ? (
         <ActivityIndicator size={"large"} />
       ) : (
@@ -64,9 +140,24 @@ export const ReservationDetailsPage = ({ navigation, route }) => {
               date={formatDate(reservation.reservationStart)}
               location={reservation.fishingSpot.title}
               desc={reservation.fishingSpot.type}
-              description={reservation.fishingSpot.description}
+              fishList={fishList}
+              isFishListEditable={isFishListEditable}
+              nokill={nokill}
+              handlePressImage={handlePressImage}
+              setFishList={setFishList}
+              onPressMinus={onPressMinus}
             />
           </ScrollView>
+          {Object.keys(fishesList).length === 0 ? null : (
+            <AddFishModal
+              isVisible={isModalOpen}
+              onClose={closeModal}
+              fishData={fishData}
+              setFishData={setFishData}
+              AddToReservation={AddToReservationList}
+              fishList={fishesList}
+            />
+          )}
         </View>
       )}
     </SafeAreaView>

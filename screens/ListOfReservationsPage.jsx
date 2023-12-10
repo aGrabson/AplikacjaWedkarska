@@ -4,7 +4,7 @@ import { LogBox } from "react-native";
 import { ReservationListElement } from "../components/ReservationListElement";
 import { GetUserReservations } from "../Controllers/ReservationController";
 import icon from "../src/fish.png";
-
+import { StatusBar } from "expo-status-bar";
 LogBox.ignoreAllLogs();
 
 export const ListOfReservationsPage = ({ navigation }) => {
@@ -47,6 +47,7 @@ export const ListOfReservationsPage = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <SafeAreaView>
+        <StatusBar></StatusBar>
         <ScrollView>
           {loading ? (
             <ActivityIndicator

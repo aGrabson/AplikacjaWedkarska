@@ -46,7 +46,7 @@ export const Menu = ({ navigation }) => {
             <Text style={[styles.settings]}>Mój Profil</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.settings1]} onPress={() => navigation.navigate("ListOfReservationsPage")}>
+        <TouchableOpacity style={[styles.settings1]} onPress={() => navigation.navigate("ReservationStackNavigator")}>
           <View style={{ flexDirection: 'row' }}>
             <Text style={[styles.settings]}>Moje rezerwacje</Text>
           </View>
@@ -61,7 +61,6 @@ export const Menu = ({ navigation }) => {
             <Text style={[styles.settings]}>Regulamin</Text>
           </View>
         </TouchableOpacity>
-        
         {isController && (
           <TouchableOpacity style={[styles.settings1]} onPress={() => navigation.navigate("InspectPage")}>
             <View style={{ flexDirection: 'row' }}>

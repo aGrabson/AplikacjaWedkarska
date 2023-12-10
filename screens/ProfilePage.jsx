@@ -12,6 +12,7 @@ import {
 import { StatusBar } from "expo-status-bar";
 import { GetUserInfo, UpdateUserInfo } from "../Controllers/AccountController";
 import { LoadingModal } from "../components/LoadingModal.jsx";
+import { Button } from "../components/Button.jsx";
 export const ProfilePage = ({ navigation }) => {
   const [editMode, setEditMode] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -51,15 +52,13 @@ export const ProfilePage = ({ navigation }) => {
           surname: !profileData.surname ? "Pole wymagane" : "",
           email: !profileData.email ? "Pole wymagane" : "",
         });
-        return
-      }
-      else{
+        return;
+      } else {
         setLoading(true);
         await UpdateUserInfo(profileData, setEditMode);
         setLoading(false);
       }
-    }
-    else setEditMode(true)
+    } else setEditMode(true);
   };
 
   return (
@@ -124,16 +123,9 @@ export const ProfilePage = ({ navigation }) => {
                   value={profileData.cardNumber}
                 />
               </View>
-              <View style={styles.buttonContainer}>
-                <TouchableOpacity
-                  style={styles.button}
-                  onPress={handleEditButton}
-                >
-                  <Text style={styles.buttonText}>
-                    {editMode ? "Zapisz" : "Edytuj"}
-                  </Text>
-                </TouchableOpacity>
-              </View>
+              <Button onPress={handleEditButton}>
+                {editMode ? "Zapisz" : "Edytuj"}
+              </Button>
             </>
           )}
         </ScrollView>
@@ -166,10 +158,6 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "50%",
   },
-  buttonText: {
-    color: "white",
-    fontSize: 17,
-  },
   Inputs: {
     width: "100%",
     height: 50,
@@ -200,14 +188,5 @@ const styles = StyleSheet.create({
     width: "80%",
     height: 80,
     marginVertical: 12,
-  },
-  buttonContainer: {
-    alignItems: "center",
-    marginTop: 20,
-  },
-  button: {
-    backgroundColor: "#0000FF",
-    padding: 10,
-    borderRadius: 5,
   },
 });

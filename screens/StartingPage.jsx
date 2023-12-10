@@ -12,7 +12,7 @@ export const StartingPage = ({ navigation }) => {
       <StatusBar></StatusBar>
       <ImageBackground
         style={styles.background}
-        source={require("../src/tlo.png")}
+        source={require("../src/tlobazowe.png")}
       >
         <View style={styles.bottomContainer}>
           <TouchableOpacity

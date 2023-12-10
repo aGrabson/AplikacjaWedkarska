@@ -25,23 +25,33 @@ export const MainPage = ({ navigation }) => {
     longitude: 20.634342,
   });
 
-  async function requestLocationPermission() {
+  async function checkLocationPermission() {
     try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        {
-          title: 'Zezwolenie na dostęp do lokalizacji.',
-          message: 'Proszę nadać uprawnienia do twojej lokalizacji.',
-          buttonNeutral: 'Zapytaj później',
-          buttonNegative: 'Anuluj',
-          buttonPositive: 'Zezwól',
-        },
+      // Sprawdź, czy masz już uprawnienia do lokalizacji
+      const hasPermission = await PermissionsAndroid.check(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
       );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+  
+      if (hasPermission) {
         setHasLocationPermission(true);
-
       } else {
-        setHasLocationPermission(false);
+        // Jeśli nie masz uprawnień, poproś o nie
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+          {
+            title: 'Zezwolenie na dostęp do lokalizacji.',
+            message: 'Proszę nadać uprawnienia do twojej lokalizacji.',
+            buttonNeutral: 'Zapytaj później',
+            buttonNegative: 'Anuluj',
+            buttonPositive: 'Zezwól',
+          },
+        );
+  
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          setHasLocationPermission(true);
+        } else {
+          setHasLocationPermission(false);
+        }
       }
     } catch (err) {
       console.warn(err);
@@ -49,7 +59,7 @@ export const MainPage = ({ navigation }) => {
   }
 
   useEffect(() => {
-    requestLocationPermission();
+    checkLocationPermission();
   }, []);
 
   return (
