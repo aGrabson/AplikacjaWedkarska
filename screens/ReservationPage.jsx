@@ -29,7 +29,6 @@ export const ReservationPage = ({ navigation }) => {
       });
     }
     setFishingSpots(data);
-
     setIsLoading(false);
   };
 
@@ -59,6 +58,7 @@ export const ReservationPage = ({ navigation }) => {
           navigation={navigation}
           fishingSpots={fishingSpots}
           style={{ flex: 1 }}
+          fromInspectPage = {false}
         />
       )}
     </View>

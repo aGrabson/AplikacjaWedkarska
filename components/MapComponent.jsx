@@ -1,29 +1,36 @@
 import React, { useState } from "react";
-import { StyleSheet } from "react-native";
-import MapView, { Marker } from "react-native-maps";
+import { StyleSheet, Text, View } from "react-native";
+import MapView, { Marker, Callout } from "react-native-maps";
 
-export const MapComponent = ({ location, navigation, fishingSpots }) => {
+export const MapComponent = ({ location, navigation, fishingSpots, fromInspectPage }) => {
   const [selectedMarkerInfo, setSelectedMarkerInfo] = useState(null);
-  const [markerPressCounts, setMarkerPressCounts] = useState(1);
-  const [lastSelectedMarkerId, setLastSelectedMarkerId] = useState(null);
+  const [markerCounters, setMarkerCounters] = useState({});
 
   const handlePress = (id) => {
-    const currentCount = markerPressCounts;
-    if (currentCount % 2 === 0 && currentCount !== 0) {
-        setMarkerPressCounts(1);
-      navigation.navigate("ReservePage", { Id: id });
-    } else {
+    const currentCount = markerCounters[id] || 0;
+
+    if (currentCount === 0) {
+      setMarkerCounters({ [id]: 1 });
+
       const spotInfo = getMarkerInfo(id);
       setSelectedMarkerInfo(spotInfo);
+    } else {
+      if(fromInspectPage == true)
+      {
+        navigation.navigate("InspectionInfoPage", { Id: id });
+      }
+      else
+      {
+        navigation.navigate("ReservePage", { Id: id });
+      }
+      setMarkerCounters({ [id]: 0 });
+      setSelectedMarkerInfo(null);
     }
-    setMarkerPressCounts(currentCount + 1);
-    setLastSelectedMarkerId(id);
   };
 
   const handleMapPress = () => {
     setSelectedMarkerInfo(null);
-    setMarkerPressCounts(1);
-    setLastSelectedMarkerId(null);
+    setMarkerCounters({});
   };
 
   const getMarkerInfo = (id) => {
@@ -48,10 +55,22 @@ export const MapComponent = ({ location, navigation, fishingSpots }) => {
             latitude: spot.latitude,
             longitude: spot.longitude,
           }}
-          title={spot.title}
-          description={spot.description}
           onPress={() => handlePress(spot.id)}
-        />
+        >
+          <Callout style={{ width: 300 }}>
+            <View>
+              <Text style={{ fontWeight: "bold", fontSize: 20 }}>
+                {spot.title} [{spot.size} ha]
+              </Text>
+              <Text style={{ fontSize: 12, color:"#DADADA", fontWeight:'bold' }}>
+                (Kliknij ponownie w marker, aby przejść do rezerwacji)
+              </Text>
+              <View>
+                <Text style={{ textAlign: "justify", fontSize: 12}}>{spot.description}</Text>
+              </View>
+            </View>
+          </Callout>
+        </Marker>
       ))}
       {selectedMarkerInfo && (
         <Marker

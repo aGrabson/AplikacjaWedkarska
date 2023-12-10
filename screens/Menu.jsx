@@ -5,23 +5,23 @@ import {
   StyleSheet,
   View,
   SafeAreaView,
-  TouchableOpacity
+  TouchableOpacity,
 } from "react-native";
 import { getRoleFromToken } from "../credentials/Token.jsx";
 import { getAuthData } from "../credentials/Store.jsx";
+import Icon from "react-native-vector-icons/FontAwesome5";
 
 export const Menu = ({ navigation }) => {
   const [isController, setIsController] = useState(false);
 
   const getRole = async () => {
-    const authData = await getAuthData()
+    const authData = await getAuthData();
     const role = await getRoleFromToken(authData.accessToken);
-    if(role == 2)
-    {
+    if (role == 2) {
       setIsController(true);
     }
-  }
- 
+  };
+
   useEffect(() => {
     getRole();
   }, []);
@@ -29,49 +29,74 @@ export const Menu = ({ navigation }) => {
   const handleLogout = () => {
     navigation.reset({
       index: 0,
-      routes: [{ name: 'LoginPage' }],
+      routes: [{ name: "LoginPage" }],
     });
   };
 
   return (
     <SafeAreaView style={styles.menu}>
       <View style={styles.view}>
-        <TouchableOpacity style={[styles.settings1]} onPress={() => navigation.navigate("MainPage")}>
-          <View style={{ flexDirection: 'row' }}>
-            <Text style={[styles.settings]}>Strona Główna</Text>
+        <TouchableOpacity
+          style={[styles.settings1]}
+          onPress={() => navigation.navigate("MainPage")}
+        >
+          <View style={styles.iconText}>
+            <Icon size={24} color="black" name="home"></Icon>
           </View>
+          <Text style={[styles.settings]}>Strona Główna</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.settings1]} onPress={() => navigation.navigate("ProfilePage")}>
-          <View style={{ flexDirection: 'row' }}>
-            <Text style={[styles.settings]}>Mój Profil</Text>
+        <TouchableOpacity
+          style={[styles.settings1]}
+          onPress={() => navigation.navigate("ProfilePage")}
+        >
+          <View style={styles.iconText}>
+            <Icon size={24} color="black" name="user-alt"></Icon>
           </View>
+          <Text style={[styles.settings]}>Mój Profil</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.settings1]} onPress={() => navigation.navigate("ReservationStackNavigator")}>
-          <View style={{ flexDirection: 'row' }}>
-            <Text style={[styles.settings]}>Moje rezerwacje</Text>
+        <TouchableOpacity
+          style={[styles.settings1]}
+          onPress={() => navigation.navigate("ReservationStackNavigator")}
+        >
+          <View style={styles.iconText}>
+            <Icon size={24} color="black" name="book"></Icon>
           </View>
+          <Text style={[styles.settings]}>Moje rezerwacje</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.settings1]} onPress={() => navigation.navigate("ReservationPage")}>
-          <View style={{ flexDirection: 'row' }}>
-            <Text style={[styles.settings]}>Rezerwacja</Text>
+        <TouchableOpacity
+          style={[styles.settings1]}
+          onPress={() => navigation.navigate("ReservationPage")}
+        >
+          <View style={styles.iconText}>
+            <Icon size={24} color="black" name="map-marker-alt"></Icon>
           </View>
+          <Text style={[styles.settings]}>Rezerwacja</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.settings1]} onPress={() => navigation.navigate("RulesPage")}>
-          <View style={{ flexDirection: 'row' }}>
-            <Text style={[styles.settings]}>Regulamin</Text>
+        <TouchableOpacity
+          style={[styles.settings1]}
+          onPress={() => navigation.navigate("RulesPage")}
+        >
+          <View style={styles.iconText}>
+            <Icon size={24} color="black" name="book-reader"></Icon>
           </View>
+          <Text style={[styles.settings]}>Regulamin</Text>
         </TouchableOpacity>
         {isController && (
-          <TouchableOpacity style={[styles.settings1]} onPress={() => navigation.navigate("InspectPage")}>
-            <View style={{ flexDirection: 'row' }}>
-              <Text style={[styles.settings]}>Kontrola</Text>
+          <TouchableOpacity
+            style={[styles.settings1]}
+            onPress={() => navigation.navigate("InspectPage")}
+          >
+            <View style={styles.iconText}>
+              <Icon size={24} color="black" name="user-secret"></Icon>
             </View>
+            <Text style={[styles.settings]}>Kontrola</Text>
           </TouchableOpacity>
         )}
         <TouchableOpacity style={[styles.settings1]} onPress={handleLogout}>
-          <View style={{ flexDirection: 'row' }}>
-            <Text style={[styles.settings]}>Wyloguj</Text>
+          <View style={styles.iconText}>
+            <Icon size={24} color="black" name="sign-out-alt"></Icon>
           </View>
+          <Text style={[styles.settings]}>Wyloguj</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -94,19 +119,7 @@ const styles = StyleSheet.create({
     position: "relative",
     paddingVertical: 1,
     margin: 5,
-  },
-  logoutContainer: {
-    position: "absolute",
-    bottom: 30,
-    alignSelf: "center",
-  },
-  rectanglePressable: {
-    borderRadius: 40,
-    backgroundColor: "#0000FF",
-    width: 150,
-    height: 55,
-    justifyContent: 'center',
-    alignItems: "center",
+    flexDirection: "row",
   },
   view: {
     position: "relative",
@@ -116,5 +129,11 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     overflow: "hidden",
+  },
+  iconText: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: 30,
+    justifyContent: "center",
   },
 });

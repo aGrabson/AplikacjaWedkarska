@@ -6,7 +6,6 @@ import {
   View,
   TextInput,
   SafeAreaView,
-  TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
@@ -36,7 +35,6 @@ export const ProfilePage = ({ navigation }) => {
   const FetchData = async () => {
     setIsLoading(true);
     const data = await GetUserInfo();
-    console.log(data);
     if (data === null) {
       return;
     }

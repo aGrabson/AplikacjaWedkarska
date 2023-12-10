@@ -165,4 +165,21 @@ export default class ReservationService {
       return error.response;
     }
   }
+  async GetUsersForFishingSpot(id) {
+    const authUrl = backendLocalHostname + `FishingSpot/getUsersForFishingSpot/${id}`;
+    const authData = await getAuthData();
+    const config = {
+      headers: {
+        Authorization: "Bearer " + authData.accessToken,
+      },
+    };
+    try {
+      const response = await axios.get(authUrl, config);
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
 }
+
+

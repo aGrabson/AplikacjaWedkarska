@@ -144,3 +144,17 @@ export const ReleaseFish = async (fishId, id) => {
     return null;
   }
 };
+export const GetUsersForFishingSpot = async (id) => {
+  const gateway = new ReservationService();
+  const response = await gateway.GetUsersForFishingSpot(id);
+  if (response.status === 200) {
+    return response.data;
+  } else if (response.status === 404 || response.status === 400) {
+    Alert.alert(
+      "Błąd pobierania danych",
+      "Wystąpił problem podczas pobierania danych użytkownikach.",
+      [{ text: "OK" }]
+    );
+    return null;
+  }
+};

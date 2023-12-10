@@ -89,7 +89,7 @@ function DrawerRoot({ navigation }) {
           headerTitle: () => (
             <View>
               <TextInput
-                placeholder="Wyszukaj łowisko"
+                placeholder="Wyszukaj łowisko do rezerwacji"
                 style={{ fontSize: 20, borderColor: "#EBEBEB" }}
               ></TextInput>
               <TouchableOpacity
@@ -150,7 +150,7 @@ function DrawerRoot({ navigation }) {
           headerTitle: () => (
             <View>
               <TextInput
-                placeholder="Wyszukaj łowisko"
+                placeholder="Wyszukaj łowisko do kontroli"
                 style={{ fontSize: 20, borderColor: "#EBEBEB" }}
               ></TextInput>
               <TouchableOpacity

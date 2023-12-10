@@ -1,14 +1,10 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  ActivityIndicator,
-  StatusBar,
-  LogBox,
-  Alert,
-} from "react-native";
-import { useEffect, useState } from "react";
+import { StyleSheet, View, StatusBar, LogBox, Alert } from "react-native";
 import { Button } from "../components/Button";
+import { backendLocalHostname } from "../services/Hostname";
+import axios from "axios";
+import * as FileSystem from "expo-file-system";
+import * as IntentLauncher from "expo-intent-launcher";
+
 LogBox.ignoreAllLogs();
 
 export const RulesPage = () => {
@@ -19,7 +15,9 @@ export const RulesPage = () => {
       [
         {
           text: "Tak",
-          onPress: async () => {},
+          onPress: async () => {
+            await downloadPdf();
+          },
         },
         {
           text: "Nie",
@@ -28,6 +26,32 @@ export const RulesPage = () => {
       ],
       { cancelable: false }
     );
+  };
+
+  const downloadPdf = async () => {
+    try {
+      const response = await axios.get(
+        backendLocalHostname + "File/getRulesPdf",
+        { data: {}, body: "" }
+      );
+      const base64 = response.data.pdfContentBase64;
+
+      // Konwertuj base64 na plik PDF
+      const pdfUri = `${FileSystem.cacheDirectory}regulamin.pdf`;
+      await FileSystem.writeAsStringAsync(pdfUri, base64, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+
+      FileSystem.getContentUriAsync(pdfUri).then((cUri) => {
+        IntentLauncher.startActivityAsync("android.intent.action.VIEW", {
+          data: cUri,
+          flags: 1,
+        });
+      });
+    } catch (error) {
+      console.error("Błąd podczas pobierania pliku PDF:", error);
+      Alert.alert("Błąd", "Wystąpił błąd podczas pobierania pliku PDF.");
+    }
   };
 
   return (
