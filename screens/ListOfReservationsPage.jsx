@@ -1,5 +1,12 @@
 import { useState, useEffect } from "react";
-import { StyleSheet, View, SafeAreaView, ScrollView, ActivityIndicator} from "react-native";
+import {
+  StyleSheet,
+  View,
+  SafeAreaView,
+  ScrollView,
+  ActivityIndicator,
+  Text,
+} from "react-native";
 import { LogBox } from "react-native";
 import { ReservationListElement } from "../components/ReservationListElement";
 import { GetUserReservations } from "../Controllers/ReservationController";
@@ -10,6 +17,10 @@ LogBox.ignoreAllLogs();
 export const ListOfReservationsPage = ({ navigation }) => {
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [pageSize, setPageSize] = useState(7);
+  const [allDataFetched, setAllDataFetched] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
 
   const formatDate = (date) => {
     const utcDate = new Date(date);
@@ -30,47 +41,74 @@ export const ListOfReservationsPage = ({ navigation }) => {
   };
 
   const FetchData = async () => {
+    if (allDataFetched) {
+      return;
+    }
+    if (isFetching === true) return;
+    setIsFetching(true);
     setLoading(true);
-    const response = await GetUserReservations();
-    setReservations(response);
+    const response = await GetUserReservations(pageNumber, pageSize);
+
+    if (response && response.reservations && response.reservations.length > 0) {
+      setReservations((prevReservations) => [
+        ...prevReservations,
+        ...response.reservations,
+      ]);
+      setPageNumber(pageNumber + 1);
+    } else {
+      setAllDataFetched(true);
+    }
     setLoading(false);
+    setIsFetching(false);
+  };
+
+  const handlePress = (id) => {
+    navigation.navigate("ReservationDetailsPage", { Id: id });
   };
 
   useEffect(() => {
     FetchData();
   }, []);
 
-  const handlePress = (id) => {
-      navigation.navigate("ReservationDetailsPage", { Id: id });
+  const handleScroll = (event) => {
+    const offsetY = event.nativeEvent.contentOffset.y;
+    const contentHeight = event.nativeEvent.contentSize.height;
+    const height = event.nativeEvent.layoutMeasurement.height;
+
+    if (offsetY + height >= contentHeight - 20) {
+      FetchData();
     }
+  };
 
   return (
     <View style={styles.container}>
       <SafeAreaView>
         <StatusBar></StatusBar>
-        <ScrollView>
-          {loading ? (
-            <ActivityIndicator
-              size="large"
-              style={{ justifyContent: "center", alignSelf: "center" }}
+        <ScrollView onScroll={handleScroll} scrollEventThrottle={16}>
+          {reservations.map((item, index) => (
+            <ReservationListElement
+              key={item.id}
+              onPress={() => handlePress(item.id)}
+              image={icon}
+              title="Rezerwacja"
+              date={formatDate(item.reservationStart)}
+              location={item.fishingSpot.title}
+              desc={item.fishingSpot.type}
+              isActive={item.isActive}
             />
-          ) : (
-            <>
-              {reservations.map((item) => (
-                <ReservationListElement
-                  key={item.id}
-                  onPress={() => handlePress(item.id)}
-                  image={icon}
-                  title="Rezerwacja"
-                  date={formatDate(item.reservationStart)}
-                  location={item.fishingSpot.title}
-                  desc={item.fishingSpot.type}
-                  isActive={item.isActive}
-                />
-              ))}
-            </>
+          ))}
+          {allDataFetched && (
+            <Text style={styles.endText}>Wszystkie dane zostały pobrane</Text>
           )}
         </ScrollView>
+        {loading && (
+          <View style={styles.loadingContainer}>
+            <View style={styles.loadingTextContainer}>
+              <Text style={styles.loadingText}>Ładowanie danych</Text>
+            </View>
+            <ActivityIndicator size="large" color="#3498db" />
+          </View>
+        )}
       </SafeAreaView>
     </View>
   );
@@ -82,5 +120,34 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     width: "100%",
     height: "100%",
+  },
+  endText: {
+    textAlign: "center",
+    marginTop: 10,
+    color: "gray",
+  },
+  loadingContainer: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.7)",
+    zIndex: 1,
+  },
+  loadingIndicator: {
+    marginTop: 20,
+  },
+  loadingTextContainer: {
+    backgroundColor: "#fff",
+    padding: 10,
+    borderRadius: 8,
+  },
+  loadingText: {
+    fontSize: 16,
+    color:'#0F4C8A',
+    fontWeight:'bold'
   },
 });

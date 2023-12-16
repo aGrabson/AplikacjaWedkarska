@@ -3,8 +3,8 @@ import { backendLocalHostname } from "./Hostname.jsx";
 import axios from "axios";
 
 export default class ReservationService {
-  async GetUserReservations() {
-    const authUrl = backendLocalHostname + "Reservation/getUserReservations";
+  async GetUserReservations(pageNumber, pageSize) {
+    const authUrl = backendLocalHostname + `Reservation/getUserReservations?pageNumber=${pageNumber}&pageSize=${pageSize}`;
     const authData = await getAuthData();
     const config = {
       headers: {
@@ -37,6 +37,21 @@ export default class ReservationService {
   }
   async GetFishingSpots() {
     const authUrl = backendLocalHostname + "FishingSpot/getFishingSpots/";
+    const authData = await getAuthData();
+    const config = {
+      headers: {
+        Authorization: "Bearer " + authData.accessToken,
+      },
+    };
+    try {
+      const response = await axios.get(authUrl, config);
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
+  async GetFishingSpotsByQuery(searchQuery) {
+    const authUrl = backendLocalHostname + `FishingSpot/getFishingSpotsByQuery/${searchQuery}`;
     const authData = await getAuthData();
     const config = {
       headers: {

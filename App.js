@@ -86,17 +86,7 @@ function DrawerRoot({ navigation }) {
         component={ReservationPage}
         options={{
           unmountOnBlur: true,
-          headerTitle: () => (
-            <View>
-              <TextInput
-                placeholder="Wyszukaj łowisko do rezerwacji"
-                style={{ fontSize: 20, borderColor: "#EBEBEB" }}
-              ></TextInput>
-              <TouchableOpacity
-                onPress={() => navigation.navigate("ReservePage")}
-              ></TouchableOpacity>
-            </View>
-          ),
+          
         }}
       />
       <Drawer.Screen

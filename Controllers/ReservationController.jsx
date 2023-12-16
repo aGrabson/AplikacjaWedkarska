@@ -1,9 +1,9 @@
 import { Alert } from "react-native";
 import ReservationService from "../services/ReservationService.jsx";
 
-export const GetUserReservations = async () => {
+export const GetUserReservations = async (pageNumber, pageSize) => {
   const gateway = new ReservationService();
-  const response = await gateway.GetUserReservations();
+  const response = await gateway.GetUserReservations(pageNumber, pageSize);
   if (response.status === 200) {
     return response.data;
   } else if (response.status === 404 || response.status === 400) {
@@ -43,6 +43,20 @@ export const GetFishingSpots = async () => {
     return null;
   }
 };
+export const GetFishingSpotsByQuery = async (searchQuery) => {
+  const gateway = new ReservationService();
+  const response = await gateway.GetFishingSpotsByQuery(searchQuery);
+  if (response.status === 200) {
+    return response.data;
+  } else if (response.status === 400) {
+    Alert.alert(
+      "Błąd pobierania danych",
+      "Wystąpił problem podczas pobierania łowisk.",
+      [{ text: "OK" }]
+    );
+    return null;
+  }
+};
 export const GetFishingSpot = async (id) => {
   const gateway = new ReservationService();
   const response = await gateway.GetFishingSpot(id);
@@ -61,20 +75,18 @@ export const Reserve = async (reservation, navigation) => {
   const gateway = new ReservationService();
   const response = await gateway.Reserve(reservation);
   if (response.status === 200) {
-    Alert.alert(
-      "Sukces.",
-      "Rezerwacja pomyślna.",
-      [{ text: "OK" }]
-    );
+    Alert.alert("Sukces.", "Rezerwacja pomyślna.", [{ text: "OK" }]);
     navigation.popToTop();
     navigation.replace("DrawerRoot");
     return response.data;
-  } else if (response.status === 404 || response.status === 400) {
+  } else if (response.status === 404) {
     Alert.alert(
       "Błąd pobierania danych",
       "Wystąpił problem podczas pobierania danych o łowisku.",
       [{ text: "OK" }]
     );
+  } else if (response.status === 400) {
+    Alert.alert(response.data.error, response.data.errorText, [{ text: "OK" }]);
     return null;
   }
 };
@@ -103,11 +115,7 @@ export const AddToReservation = async (fishData) => {
     );
     return response.data;
   } else if (response.status === 404 || response.status === 400) {
-    Alert.alert(
-      response.data.error,
-      response.data.errorText,
-      [{ text: "OK" }]
-    );
+    Alert.alert(response.data.error, response.data.errorText, [{ text: "OK" }]);
     return null;
   }
 };

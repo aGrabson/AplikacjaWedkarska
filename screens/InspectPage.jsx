@@ -32,18 +32,7 @@ export const InspectPage = ({ navigation }) => {
     setIsLoading(false);
   };
 
-  const handleSearch = async () => {
-    try {
-      const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${searchQuery}&key=${YOUR_API_KEY}`
-      );
-      const data = await response.json();
-      const coordinates = data.results[0].geometry.location;
-      setLocation(coordinates);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  
   return (
     <View style={styles.container}>
       {isLoading ? (

@@ -62,6 +62,11 @@ export const MainPage = ({ navigation }) => {
     checkLocationPermission();
   }, []);
 
+  useEffect(() => {
+    checkLocationPermission();
+    console.log("GB")
+  }, [hasLocationPermission]);
+  
   return (
     <View style={styles.container}>
       {hasLocationPermission ? (
