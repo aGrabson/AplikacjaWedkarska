@@ -8,7 +8,6 @@ import {
   SafeAreaView,
   ActivityIndicator,
 } from "react-native";
-import { StatusBar } from "expo-status-bar";
 import { GetUserInfo, UpdateUserInfo } from "../Controllers/AccountController";
 import { LoadingModal } from "../components/LoadingModal.jsx";
 import { Button } from "../components/Button.jsx";
@@ -61,7 +60,6 @@ export const ProfilePage = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <StatusBar />
       <SafeAreaView style={styles.area}>
         <ScrollView style={styles.scrollView}>
           {isLoading ? (

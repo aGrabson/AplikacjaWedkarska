@@ -1,12 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import MapView, { Marker, Callout } from "react-native-maps";
-import { RatingComponent } from "./RatingComponent";
-
+import { FishingSpotDetailsOnMap } from "./FishingSpotDetailsOnMap";
+import {
+  GetRatingsForFishingSpot,
+  PostRatingForFishingSpot,
+  UpdateRatingForFishingSpot,
+} from "../Controllers/ReservationController";
 export const MapComponent = React.forwardRef(
   ({ location, navigation, fishingSpots, fromInspectPage }, ref) => {
     const [selectedMarkerInfo, setSelectedMarkerInfo] = useState(null);
     const [markerCounters, setMarkerCounters] = useState({});
+    const [infoVisable, setInfoVisable] = useState(false);
+    const [selectedFishingSpot, setSelectedFishingSpot] = useState(null);
+    const [ratingData, setRatingData] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     const handlePress = (id) => {
       const currentCount = markerCounters[id] || 0;
@@ -16,36 +24,54 @@ export const MapComponent = React.forwardRef(
 
         const spotInfo = getMarkerInfo(id);
         setSelectedMarkerInfo(spotInfo);
+        setSelectedFishingSpot(spotInfo);
       } else {
         if (fromInspectPage == true) {
           navigation.navigate("InspectionInfoPage", { Id: id });
         } else {
           navigation.navigate("ReservePage", { Id: id });
         }
-        setMarkerCounters({ [id]: 0 });
-        setSelectedMarkerInfo(null);
+        handleMapPress()
       }
     };
 
     const handleMapPress = () => {
       setSelectedMarkerInfo(null);
       setMarkerCounters({});
+      setInfoVisable(false);
     };
 
     const getMarkerInfo = (id) => {
       return fishingSpots.find((spot) => spot.id === id);
     };
-    const onRatingChange = async (spotId, newRating) => {
-      try {
-        // Wywołaj funkcję z backendu do aktualizacji oceny
-        console.log("JEST OK");
-        //await updateRatingForFishingSpot(spotId, newRating);
-      } catch (error) {
-        console.error("Błąd podczas aktualizacji oceny:", error);
-        // Obsłuż błąd, np. wyświetlając komunikat użytkownikowi
-      }
+
+    const onCalloutPress = async (spot) => {
+      setSelectedFishingSpot(spot);
+      setInfoVisable(!infoVisable);
     };
+
+    const FetchData = async () => {
+      setIsLoading(true)
+      const data = await GetRatingsForFishingSpot(selectedFishingSpot.id);
+      setRatingData(data);
+      setIsLoading(false)
+    };
+    useEffect(() => {
+      if (selectedFishingSpot !== null) FetchData();
+    }, [selectedFishingSpot?.id]);
+
+    const handleRatingChange = async (newRating) => {
+      const data = { newRating, spotId: selectedFishingSpot.id };
+      if (ratingData.userRating !== null) {
+        await UpdateRatingForFishingSpot(data);
+      } else {
+        await PostRatingForFishingSpot(data);
+      }
+      FetchData();
+    };
+
     return (
+      <>
         <MapView
           style={styles.map}
           initialRegion={{
@@ -66,10 +92,16 @@ export const MapComponent = React.forwardRef(
               }}
               onPress={() => handlePress(spot.id)}
             >
-              <Callout style={{ width: 300 }}>
+              <Callout
+                style={{ width: 300 }}
+                onPress={() => onCalloutPress(spot)}
+              >
                 <View>
                   <Text style={{ fontWeight: "bold", fontSize: 20 }}>
                     {spot.title} [{spot.size} ha]
+                  </Text>
+                  <Text style={{ fontWeight: "bold", fontSize: 16 }}>
+                    Typ wody: {spot.type}
                   </Text>
                   <Text
                     style={{
@@ -79,17 +111,8 @@ export const MapComponent = React.forwardRef(
                     }}
                   >
                     (Kliknij ponownie w marker, aby przejść do rezerwacji)
+                    (Kliknij tutaj, aby zobaczyć więcej informacji)
                   </Text>
-                  <RatingComponent
-                    spotId={spot.id}
-                    initialRating={1}
-                    onRatingChange={onRatingChange}
-                  />
-                  <View>
-                    <Text style={{ textAlign: "justify", fontSize: 12 }}>
-                      {spot.description}
-                    </Text>
-                  </View>
                 </View>
               </Callout>
             </Marker>
@@ -105,6 +128,15 @@ export const MapComponent = React.forwardRef(
             />
           )}
         </MapView>
+        {infoVisable ? (
+          <FishingSpotDetailsOnMap
+            spot={selectedFishingSpot}
+            ratingData={ratingData}
+            handleRatingChange={handleRatingChange}
+            isLoading={isLoading}
+          ></FishingSpotDetailsOnMap>
+        ) : null}
+      </>
     );
   }
 );

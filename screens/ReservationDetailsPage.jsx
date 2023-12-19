@@ -6,6 +6,8 @@ import {
   View,
   ActivityIndicator,
   Alert,
+  TouchableOpacity,
+  Text,
 } from "react-native";
 import fishIcon from "../src/fish.png";
 import { ReservationDetails } from "../components/ReservationDetails";
@@ -14,16 +16,16 @@ import {
   GetUserFishes,
   ReleaseFish,
 } from "../Controllers/ReservationController";
-import { StatusBar } from "expo-status-bar";
 import { AddFishModal } from "../components/AddFishModal";
 import { GetFishList } from "../Controllers/ReservationController";
 import { AddToReservation } from "../Controllers/ReservationController";
+import { Button } from "../components/Button";
+import { CancelReservation } from "../Controllers/ReservationController";
 
 export const ReservationDetailsPage = ({ navigation, route }) => {
   const id = route.params.Id;
   const [isFishListEditable, setIsFishListEditable] = useState(false);
   const [reservation, setReservation] = useState({});
-
   const [fishList, setFishList] = useState([]);
   const [fishesList, setFishesList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -63,7 +65,7 @@ export const ReservationDetailsPage = ({ navigation, route }) => {
     }
     if (fishesList !== null) {
       setFishesList(fishesList);
-      setFishData((prev) => ({...prev, selectedFish: fishesList[0].id}));
+      setFishData((prev) => ({ ...prev, selectedFish: fishesList[0].id }));
     }
     if (data !== null) {
       setReservation(data);
@@ -107,9 +109,7 @@ export const ReservationDetailsPage = ({ navigation, route }) => {
 
   const handlePressImage = async (fromWhatButton) => {
     if (fromWhatButton == "fromMinus") {
-      console.log("gb");
     } else if (fromWhatButton == "fromPlus") {
-      console.log("gb2");
       setModalOpen(true);
     }
   };
@@ -117,6 +117,28 @@ export const ReservationDetailsPage = ({ navigation, route }) => {
   const closeModal = () => {
     setFishData({ reservationId: id });
     setModalOpen(false);
+  };
+  const HandleCancelReservation = async () => {
+    Alert.alert(
+      "Potwierdzenie",
+      "Czy na pewno chcesz anulować rezerwację?",
+      [
+        {
+          text: "Tak",
+          onPress: async () => {
+            await CancelReservation(id);
+            navigation.navigate("ListOfReservationsPage", {
+              toBeRefreshed: true,
+            });
+          },
+        },
+        {
+          text: "Nie",
+          style: "cancel",
+        },
+      ],
+      { cancelable: false }
+    );
   };
 
   return (
@@ -128,7 +150,6 @@ export const ReservationDetailsPage = ({ navigation, route }) => {
         backgroundColor: "white",
       }}
     >
-      <StatusBar></StatusBar>
       {isLoading ? (
         <ActivityIndicator size={"large"} />
       ) : (
@@ -147,6 +168,12 @@ export const ReservationDetailsPage = ({ navigation, route }) => {
               setFishList={setFishList}
               onPressMinus={onPressMinus}
             />
+            {new Date(reservation.reservationStart).getTime() >
+            new Date().getTime() + 1 * 60 * 60 * 1000 ? (
+              <Button onPress={HandleCancelReservation}>
+                Anuluj rezerwację
+              </Button>
+            ) : null}
           </ScrollView>
           {Object.keys(fishesList).length === 0 ? null : (
             <AddFishModal

@@ -63,7 +63,6 @@ export const ExpandableComponent = ({
         borderColor: "#0F4C8A",
         display: "flex",
       }}
-      
     >
       <TouchableOpacity
         key={item.species}
@@ -103,21 +102,31 @@ export const ExpandableComponent = ({
           <Text style={styles.expandableText}>Rozmiar</Text>
           <Text style={styles.expandableText}>Waga</Text>
           {isFishListEditable ? (
-              
-          <Minuscircleo size={24} name="minuscircleo" color="white"></Minuscircleo>
-              
-            ) : null}
+            <Minuscircleo
+              size={24}
+              name="minuscircleo"
+              color="white"
+            ></Minuscircleo>
+          ) : null}
         </View>
 
         {item.fishList.map((fish) => (
           <View key={fish.id} style={styles.expandableItems}>
-            <Text style={styles.expandableText}>{formatDate(fish.catchDateTime)}</Text>
-            <Text style={styles.expandableText}>{formatTime(fish.catchDateTime)}</Text>
+            <Text style={styles.expandableText}>
+              {formatDate(fish.catchDateTime)}
+            </Text>
+            <Text style={styles.expandableText}>
+              {formatTime(fish.catchDateTime)}
+            </Text>
             <Text style={styles.expandableText}>{fish.size}cm</Text>
             <Text style={styles.expandableText}>{fish.weight}kg</Text>
             {isFishListEditable ? (
-              <TouchableOpacity onPress={() => onPress(fish.id) }>
-                <Minuscircleo size={24} name="minuscircleo" color="#0F4C8A"></Minuscircleo>
+              <TouchableOpacity onPress={() => onPress(fish.id)}>
+                <Minuscircleo
+                  size={24}
+                  name="minuscircleo"
+                  color="#0F4C8A"
+                ></Minuscircleo>
               </TouchableOpacity>
             ) : null}
           </View>
@@ -136,11 +145,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     borderBottomWidth: 0.5,
-    borderColor:'#0F4C8A',
-    minHeight:40,
-    alignItems:'center',
+    borderColor: "#0F4C8A",
+    minHeight: 40,
+    alignItems: "center",
   },
   expandableText: {
-    flex: 1
-  }
+    flex: 1,
+  },
 });

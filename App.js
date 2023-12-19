@@ -26,8 +26,9 @@ import { Text, TouchableOpacity, View, TextInput } from "react-native";
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 const ReservationStack = createNativeStackNavigator();
+const ReserveStack = createNativeStackNavigator();
+const InspectionStack = createNativeStackNavigator();
 function DrawerRoot({ navigation }) {
-  const [searchText, setSearchText] = useState("");
   return (
     <Drawer.Navigator
       screenOptions={{
@@ -50,7 +51,7 @@ function DrawerRoot({ navigation }) {
             <View>
               <TouchableOpacity
                 onPress={() =>
-                  navigation.navigate("ReservationPage", { searchText })
+                  navigation.navigate("ReserveStackNavigator")
                 }
                 style={{
                   backgroundColor: "#0000FF",
@@ -81,14 +82,7 @@ function DrawerRoot({ navigation }) {
           ),
         }}
       />
-      <Drawer.Screen
-        name="ReservationPage"
-        component={ReservationPage}
-        options={{
-          unmountOnBlur: true,
-          
-        }}
-      />
+      
       <Drawer.Screen
         name="RulesPage"
         component={RulesPage}
@@ -117,65 +111,31 @@ function DrawerRoot({ navigation }) {
         }}
       />
       <Drawer.Screen
-        name="ReservePage"
-        component={ReservePage}
+        name="ReserveStackNavigator"
+        component={ReserveStackNavigator}
         options={{
           unmountOnBlur: true,
+          headerShown: false,
           headerTitle: () => (
             <View>
               <Text
                 style={{ fontSize: 24, color: "#0F4C8A", textAlign: "center" }}
               >
-                Rezerwacja{"\n"}"
+                Rezerwacja
               </Text>
             </View>
           ),
         }}
       />
       <Drawer.Screen
-        name="InspectPage"
-        component={InspectPage}
+        name="InspectionStackNavigator"
+        component={InspectionStackNavigator}
         options={{
           unmountOnBlur: true,
-          headerTitle: () => (
-            <View>
-              <TextInput
-                placeholder="Wyszukaj łowisko do kontroli"
-                style={{ fontSize: 20, borderColor: "#EBEBEB" }}
-              ></TextInput>
-              <TouchableOpacity
-                onPress={() => navigation.navigate("InspectionInfoPage")}
-              ></TouchableOpacity>
-            </View>
-          ),
+          headerShown: false,
         }}
       />
-      <Drawer.Screen
-        name="InspectionInfoPage"
-        component={InspectionInfoPage}
-        options={{
-          unmountOnBlur: true,
-          headerTitle: () => (
-            <View>
-              <TextInput
-                placeholder="Wyszukaj wędkarza"
-                style={{ fontSize: 20, borderColor: "#EBEBEB" }}
-              ></TextInput>
-              <TouchableOpacity
-                onPress={() => navigation.navigate("InspectUserPage")}
-              ></TouchableOpacity>
-            </View>
-          ),
-        }}
-      />
-      <Drawer.Screen
-        name="InspectUserPage"
-        component={InspectUserPage}
-        options={{
-          unmountOnBlur: true,
-          headerTitle: "Działania dot. wędkarza",
-        }}
-      />
+      
     </Drawer.Navigator>
   );
 }
@@ -194,7 +154,7 @@ export const ReservationStackNavigator = ({ navigation }) => {
                 height: 100,
                 borderBottomLeftRadius: 25,
                 borderBottomRightRadius: 25,
-                alignItems: "flex-end",
+                alignItems: "center",
                 width: "100%",
               }}
             >
@@ -207,17 +167,17 @@ export const ReservationStackNavigator = ({ navigation }) => {
                   name="bars"
                   style={{
                     marginRight: 35,
-                    marginBottom: 10,
                   }}
                 />
               </TouchableOpacity>
-              <Text style={{ fontSize: 28, color: "#0F4C8A" }}>
+              <Text style={{ fontSize: 28, color: "#0F4C8A", }}>
                 Lista rezerwacji
               </Text>
             </View>
           ),
           headerStyle: {},
           headerTintColor: "#0F4C8A",
+          unmountOnBlur: true,
         }}
       />
       <ReservationStack.Screen
@@ -226,12 +186,84 @@ export const ReservationStackNavigator = ({ navigation }) => {
         options={{
           headerTitle: "Szczegóły rezerwacji",
           headerTintColor: "#0F4C8A",
+          unmountOnBlur: true,
           headerStyle: {
             backgroundColor: "#DADADA",
           },
         }}
       />
     </ReservationStack.Navigator>
+  );
+};
+export const ReserveStackNavigator = ({ navigation }) => {
+  return (
+    <ReserveStack.Navigator initialRouteName="ReservationPage">
+      <ReserveStack.Screen
+        name="ReservationPage"
+        component={ReservationPage}
+        headerShown={false}
+        options={{
+          
+          headerStyle: {},
+          headerTintColor: "#0F4C8A",
+          unmountOnBlur: true,
+        }}
+      />
+      <ReserveStack.Screen
+        name="ReservePage"
+        component={ReservePage}
+        headerShown={false}
+        options={{
+          headerTitle: "Szczegóły rezerwacji",
+          headerTintColor: "#0F4C8A",
+          unmountOnBlur: true,
+          headerStyle: {
+            backgroundColor: "#DADADA",
+          },
+        }}
+      />
+    </ReserveStack.Navigator>
+  );
+};
+export const InspectionStackNavigator = ({ navigation }) => {
+  return (
+    <InspectionStack.Navigator initialRouteName="InspectPage">
+      <InspectionStack.Screen
+        name="InspectPage"
+        component={InspectPage}
+        headerShown={false}
+        options={{
+          
+          headerStyle: {},
+          headerTintColor: "#0F4C8A",
+          unmountOnBlur: true,
+        }}
+      />
+      <InspectionStack.Screen
+        name="InspectionInfoPage"
+        component={InspectionInfoPage}
+        options={{
+          headerTitle: "Kontrola",
+          headerTintColor: "#0F4C8A",
+          unmountOnBlur: true,
+          headerStyle: {
+            backgroundColor: "#DADADA",
+          },
+        }}
+      />
+      <InspectionStack.Screen
+        name="InspectUserPage"
+        component={InspectUserPage}
+        options={{
+          headerTitle: "Informacje dot. wędkarza",
+          headerTintColor: "#0F4C8A",
+          unmountOnBlur: true,
+          headerStyle: {
+            backgroundColor: "#DADADA",
+          },
+        }}
+      />
+    </InspectionStack.Navigator>
   );
 };
 

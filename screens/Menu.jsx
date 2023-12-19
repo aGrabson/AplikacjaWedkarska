@@ -65,7 +65,7 @@ export const Menu = ({ navigation }) => {
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.settings1]}
-          onPress={() => navigation.navigate("ReservationPage")}
+          onPress={() => navigation.navigate("ReserveStackNavigator")}
         >
           <View style={styles.iconText}>
             <Icon size={24} color="black" name="map-marker-alt"></Icon>
@@ -84,7 +84,7 @@ export const Menu = ({ navigation }) => {
         {isController && (
           <TouchableOpacity
             style={[styles.settings1]}
-            onPress={() => navigation.navigate("InspectPage")}
+            onPress={() => navigation.navigate("InspectionStackNavigator")}
           >
             <View style={styles.iconText}>
               <Icon size={24} color="black" name="user-secret"></Icon>
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
   },
   view: {
     position: "relative",
-    top: "3%",
+    top: 30,
     backgroundColor: "#DADADA",
     flex: 1,
     width: "100%",

@@ -4,7 +4,9 @@ import axios from "axios";
 
 export default class ReservationService {
   async GetUserReservations(pageNumber, pageSize) {
-    const authUrl = backendLocalHostname + `Reservation/getUserReservations?pageNumber=${pageNumber}&pageSize=${pageSize}`;
+    const authUrl =
+      backendLocalHostname +
+      `Reservation/getUserReservations?pageNumber=${pageNumber}&pageSize=${pageSize}`;
     const authData = await getAuthData();
     const config = {
       headers: {
@@ -51,7 +53,9 @@ export default class ReservationService {
     }
   }
   async GetFishingSpotsByQuery(searchQuery) {
-    const authUrl = backendLocalHostname + `FishingSpot/getFishingSpotsByQuery/${searchQuery}`;
+    const authUrl =
+      backendLocalHostname +
+      `FishingSpot/getFishingSpotsByQuery/${searchQuery}`;
     const authData = await getAuthData();
     const config = {
       headers: {
@@ -158,8 +162,6 @@ export default class ReservationService {
   }
   async ReleaseFish(fishId, id) {
     const authUrl = backendLocalHostname + "Reservation/releaseFish/";
-    console.log(fishId)
-    console.log(id)
     const authData = await getAuthData();
     const config = {
       headers: {
@@ -167,7 +169,7 @@ export default class ReservationService {
       },
     };
     try {
-      const response = await axios.post(
+      const response = await axios.put(
         authUrl,
         {
           caughtFishId: fishId,
@@ -181,7 +183,8 @@ export default class ReservationService {
     }
   }
   async GetUsersForFishingSpot(id) {
-    const authUrl = backendLocalHostname + `FishingSpot/getUsersForFishingSpot/${id}`;
+    const authUrl =
+      backendLocalHostname + `FishingSpot/getUsersForFishingSpot/${id}`;
     const authData = await getAuthData();
     const config = {
       headers: {
@@ -195,6 +198,89 @@ export default class ReservationService {
       return error.response;
     }
   }
+  async GetRatingsForFishingSpot(id) {
+    const authUrl =
+      backendLocalHostname + `FishingSpot/getRatingsForFishingSpot/${id}`;
+    const authData = await getAuthData();
+    const config = {
+      headers: {
+        Authorization: "Bearer " + authData.accessToken,
+      },
+    };
+    try {
+      const response = await axios.get(authUrl, config);
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
+  async PostRatingForFishingSpot(data) {
+    const authUrl =
+      backendLocalHostname + "FishingSpot/postRatingForFishingSpot/";
+    const authData = await getAuthData();
+    const config = {
+      headers: {
+        Authorization: "Bearer " + authData.accessToken,
+      },
+    };
+    try {
+      const response = await axios.post(
+        authUrl,
+        {
+          rating: data.newRating,
+          fishingSpotId: data.spotId,
+        },
+        config
+      );
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
+  async UpdateRatingForFishingSpot(data) {
+    const authUrl =
+      backendLocalHostname + "FishingSpot/updateRatingForFishingSpot/";
+    const authData = await getAuthData();
+    const config = {
+      headers: {
+        Authorization: "Bearer " + authData.accessToken,
+      },
+    };
+    try {
+      const response = await axios.put(
+        authUrl,
+        {
+          rating: data.newRating,
+          fishingSpotId: data.spotId,
+        },
+        config
+      );
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
+  async CancelReservation(id) {
+    const authUrl =
+      backendLocalHostname + "Reservation/cancelReservation/";
+    const authData = await getAuthData();
+    const config = {
+      headers: {
+        Authorization: "Bearer " + authData.accessToken,
+      },
+    };
+    try {
+      const response = await axios.put(
+        authUrl,
+        {
+          reservationId: id,
+          isCancelled: true,
+        },
+        config
+      );
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
 }
-
-

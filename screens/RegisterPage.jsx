@@ -15,7 +15,6 @@ import {
   Datepicker as RNKDatepicker,
   Icon as RNKIcon,
 } from "@ui-kitten/components";
-import { StatusBar } from "expo-status-bar";
 import { Register } from "../Controllers/AccountController.jsx";
 import { LoadingModal } from "../components/LoadingModal.jsx";
 
@@ -79,7 +78,6 @@ export const RegisterPage = ({ navigation }) => {
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="height">
       <SafeAreaView style={{ flex: 1 }}>
-        <StatusBar></StatusBar>
         <View style={styles.container}>
           <ImageBackground
             style={styles.background}

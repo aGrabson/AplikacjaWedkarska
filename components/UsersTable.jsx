@@ -1,8 +1,8 @@
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 
-export const UsersTable = ({ usersData, navigation }) => {
-  const handleUserPress = () => {
-    navigation.navigate("InspectUserPage", { userData: usersData });
+export const UsersTable = ({ usersData, navigation, fishingSpotid }) => {
+  const handleUserPress = (item) => {
+    navigation.navigate("InspectUserPage", { userData: item, spotId:fishingSpotid, reservationId:item.reservationId });
   };
 
   return (
@@ -12,15 +12,15 @@ export const UsersTable = ({ usersData, navigation }) => {
         <Text style={styles.tableHeader}>Nazwisko</Text>
         <Text style={styles.tableHeader}>Numer</Text>
       </View>
-      {usersData.map((item) => (
+      {usersData.map((item, key) => (
         <TouchableOpacity
-          key={item.cardId}
-          onPress={() => handleUserPress()}
+          key={key}
+          onPress={() => handleUserPress(item)}
           style={{ flexDirection: "row", paddingVertical: 10 }}
         >
           <Text style={styles.userText}>{item.name}</Text>
           <Text style={styles.userText}>{item.surname}</Text>
-          <Text style={styles.userText}>{item.cardID}</Text>
+          <Text style={styles.userText}>{item.cardNumber}</Text>
         </TouchableOpacity>
       ))}
     </View>

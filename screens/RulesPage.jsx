@@ -1,4 +1,4 @@
-import { StyleSheet, View, StatusBar, LogBox, Alert } from "react-native";
+import { StyleSheet, View, LogBox, Alert } from "react-native";
 import { Button } from "../components/Button";
 import { backendLocalHostname } from "../services/Hostname";
 import axios from "axios";
@@ -56,7 +56,6 @@ export const RulesPage = () => {
 
   return (
     <View style={styles.container}>
-      <StatusBar></StatusBar>
       <Button onPress={handlePress}>Kliknij tutaj aby pobrać regulamin</Button>
     </View>
   );

@@ -77,7 +77,7 @@ export const Reserve = async (reservation, navigation) => {
   if (response.status === 200) {
     Alert.alert("Sukces.", "Rezerwacja pomyślna.", [{ text: "OK" }]);
     navigation.popToTop();
-    navigation.replace("DrawerRoot");
+    navigation.replace("ReserveStackNavigator");
     return response.data;
   } else if (response.status === 404) {
     Alert.alert(
@@ -161,6 +161,62 @@ export const GetUsersForFishingSpot = async (id) => {
     Alert.alert(
       "Błąd pobierania danych",
       "Wystąpił problem podczas pobierania danych użytkownikach.",
+      [{ text: "OK" }]
+    );
+    return null;
+  }
+};
+export const GetRatingsForFishingSpot = async (id) => {
+  const gateway = new ReservationService();
+  const response = await gateway.GetRatingsForFishingSpot(id);
+  if (response.status === 200) {
+    return response.data;
+  } else if (response.status === 404 || response.status === 400) {
+    Alert.alert(
+      "Błąd pobierania danych",
+      "Wystąpił problem podczas pobierania danych o ocenie łowiska.",
+      [{ text: "OK" }]
+    );
+    return null;
+  }
+};
+export const PostRatingForFishingSpot = async (data) => {
+  const gateway = new ReservationService();
+  const response = await gateway.PostRatingForFishingSpot(data);
+  if (response.status === 200) {
+    return response.data;
+  } else if (response.status === 404 || response.status === 400) {
+    Alert.alert(
+      "Błąd pobierania danych",
+      "Wystąpił problem podczas dodawania oceny łowiska.",
+      [{ text: "OK" }]
+    );
+    return null;
+  }
+};
+export const UpdateRatingForFishingSpot = async (data) => {
+  const gateway = new ReservationService();
+  const response = await gateway.UpdateRatingForFishingSpot(data);
+  if (response.status === 200) {
+    return response.data;
+  } else if (response.status === 404 || response.status === 400) {
+    Alert.alert(
+      "Błąd pobierania danych",
+      "Wystąpił problem podczas dodawania oceny łowiska.",
+      [{ text: "OK" }]
+    );
+    return null;
+  }
+};
+export const CancelReservation = async (id) => {
+  const gateway = new ReservationService();
+  const response = await gateway.CancelReservation(id);
+  if (response.status === 200) {
+    return response.data;
+  } else if (response.status === 404 || response.status === 400) {
+    Alert.alert(
+      "Error",
+      "Wystąpił problem podczas anulowania rezerwacji.",
       [{ text: "OK" }]
     );
     return null;

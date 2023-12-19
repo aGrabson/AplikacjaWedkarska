@@ -37,7 +37,6 @@ export const AddFishModal = ({
               setFishData((prev) => ({ ...prev, selectedFish: itemValue }))
             }
             style={styles.inputText}
-            
           >
             {fishList.map((fish, index) => (
               <Picker.Item key={index} label={fish.species} value={fish.id} />

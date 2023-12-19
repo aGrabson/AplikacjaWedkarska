@@ -14,6 +14,7 @@ import {
 } from "../Controllers/ReservationController.jsx";
 import { MapComponent } from "../components/MapComponent.jsx";
 import * as Location from "expo-location";
+import BarsIcon from "react-native-vector-icons/FontAwesome";
 
 export const ReservationPage = ({ navigation }) => {
   const [location, setLocation] = useState({
@@ -26,10 +27,7 @@ export const ReservationPage = ({ navigation }) => {
   const [fishingSpotsByQuery, setFishingSpotsByQuery] = useState(undefined);
   const mapRef = useRef(null);
 
-  useEffect(() => {
-    getLocationAsync();
-    FetchData();
-  }, []);
+
 
   const getLocationAsync = async () => {
     var { status } = await Location.requestForegroundPermissionsAsync();
@@ -62,7 +60,7 @@ export const ReservationPage = ({ navigation }) => {
 
     return (...args) => {
       clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
+      timeoutId = setTimeout(() => { 
         callback(...args);
       }, delay);
     };
@@ -77,18 +75,43 @@ export const ReservationPage = ({ navigation }) => {
     setSearchQuery(text);
     handleSearchDebounced(text);
   };
+
   useEffect(() => {
     navigation.setOptions({
-      headerTitle: () => (
-        <View>
-          <TextInput
-            placeholder="Wyszukaj łowisko do rezerwacji"
-            style={{ fontSize: 20, borderColor: "#EBEBEB" }}
-            value={searchQuery}
-            onChangeText={async (text) => {
-              handleSearch(text);
-            }}
-          ></TextInput>
+      header: () => (
+        <View
+          style={{
+            flexDirection: "row",
+            backgroundColor: "#DADADA",
+            height: 100,
+            borderBottomLeftRadius: 25,
+            borderBottomRightRadius: 25,
+            alignItems: "center",
+            width: "100%",
+          }}
+        >
+          <TouchableOpacity
+            onPress={() => navigation.openDrawer()}
+            style={{ marginLeft: 15 }}
+          >
+            <BarsIcon
+              size={20}
+              name="bars"
+              style={{
+                marginRight: 35,
+              }}
+            />
+          </TouchableOpacity>
+          <View>
+              <TextInput
+                placeholder="Wyszukaj łowisko do rezerwacji"
+                style={{ fontSize: 20, borderColor: "#EBEBEB" }}
+                value={searchQuery}
+                onChangeText={async (text) => {
+                  handleSearch(text);
+                }}
+              ></TextInput>
+            </View>
         </View>
       ),
     });
@@ -103,6 +126,11 @@ export const ReservationPage = ({ navigation }) => {
     setFishingSpots(data);
     setIsLoading(false);
   };
+  useEffect(() => {
+    getLocationAsync();
+    FetchData();
+  }, []);
+
 
   return (
     <View style={styles.container}>

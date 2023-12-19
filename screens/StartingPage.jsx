@@ -5,11 +5,9 @@ import {
   Text,
   TouchableOpacity,
 } from "react-native";
-import { StatusBar } from "expo-status-bar";
 export const StartingPage = ({ navigation }) => {
   return (
     <View style={styles.container}>
-      <StatusBar></StatusBar>
       <ImageBackground
         style={styles.background}
         source={require("../src/tlobazowe.png")}

@@ -11,17 +11,16 @@ import { LogBox } from "react-native";
 import { ReservationListElement } from "../components/ReservationListElement";
 import { GetUserReservations } from "../Controllers/ReservationController";
 import icon from "../src/fish.png";
-import { StatusBar } from "expo-status-bar";
 LogBox.ignoreAllLogs();
 
-export const ListOfReservationsPage = ({ navigation }) => {
+export const ListOfReservationsPage = ({ navigation, route }) => {
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(7);
   const [allDataFetched, setAllDataFetched] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
-
+  const fakeDelay = (ms) => new Promise((res) => setTimeout(res, ms));
   const formatDate = (date) => {
     const utcDate = new Date(date);
     const localDate = new Intl.DateTimeFormat("pl-PL", {
@@ -67,8 +66,9 @@ export const ListOfReservationsPage = ({ navigation }) => {
   };
 
   useEffect(() => {
-    FetchData();
-  }, []);
+    if(reservations.length==0) FetchData();
+  }, [reservations]);
+  
 
   const handleScroll = (event) => {
     const offsetY = event.nativeEvent.contentOffset.y;
@@ -79,15 +79,36 @@ export const ListOfReservationsPage = ({ navigation }) => {
       FetchData();
     }
   };
+  const clearReservations = async () => {
+    setReservations([]);
+  }
+  const handleRefresh = async () => {
+    setIsFetching(false)
+    setAllDataFetched(false);
+    setPageNumber(1);
+    await clearReservations();
+    fakeDelay(2000)
+  }
+
+  useEffect(() => {
+    if (route.params?.toBeRefreshed) {
+      handleRefresh();
+    }
+    const unsubscribe = navigation.addListener("focus", () => {
+      if (route.params?.toBeRefreshed) {
+        handleRefresh();
+      }
+    });
+    return unsubscribe;
+  }, [route.params?.toBeRefreshed]);
 
   return (
     <View style={styles.container}>
       <SafeAreaView>
-        <StatusBar></StatusBar>
         <ScrollView onScroll={handleScroll} scrollEventThrottle={16}>
-          {reservations.map((item, index) => (
+          {reservations.map((item, key) => (
             <ReservationListElement
-              key={item.id}
+              key={key}
               onPress={() => handlePress(item.id)}
               image={icon}
               title="Rezerwacja"

@@ -22,7 +22,7 @@ export const ReservationDetails = ({
   handlePressImage,
   nokill,
   setFishList,
-  onPressMinus
+  onPressMinus,
 }) => {
   const updateLayout = (index) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -75,7 +75,11 @@ export const ReservationDetails = ({
                       alignItems: "center",
                     }}
                   >
-                    <Pluscircleo size={32} name="pluscircleo" color='#0F4C8A'></Pluscircleo>
+                    <Pluscircleo
+                      size={32}
+                      name="pluscircleo"
+                      color="#0F4C8A"
+                    ></Pluscircleo>
                   </TouchableOpacity>
                 </View>
               ) : (

@@ -12,7 +12,6 @@ import {
   Alert,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { StatusBar } from "expo-status-bar";
 import { Login } from "../Controllers/AccountController";
 import { LoadingModal } from "../components/LoadingModal.jsx";
 
@@ -41,7 +40,6 @@ export const LoginPage = ({ navigation }) => {
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="height">
       <SafeAreaView style={{ flex: 1 }}>
-        <StatusBar></StatusBar>
         <View style={styles.container}>
           <ImageBackground
             style={styles.background}

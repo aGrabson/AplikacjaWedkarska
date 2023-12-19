@@ -64,7 +64,6 @@ export const MainPage = ({ navigation }) => {
 
   useEffect(() => {
     checkLocationPermission();
-    console.log("GB")
   }, [hasLocationPermission]);
   
   return (

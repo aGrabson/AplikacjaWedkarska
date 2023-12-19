@@ -40,7 +40,7 @@ export const InspectionInfoPage = ({ navigation, route }) => {
             Lista wędkarzy na łowisku <Text>{fishingSpotData.title}</Text>
           </Text>
           <View>
-            <UsersTable usersData = {usersOnSpotData} navigation={navigation}/>
+            <UsersTable usersData = {usersOnSpotData} fishingSpotid = {id} navigation={navigation}/>
           </View>
         </>
       )}
