@@ -217,7 +217,7 @@ export const InspectUserPage = ({ navigation, route }) => {
             <View style={{flex:1}}>
               <PhotoList photos={photos} onDeletePhoto={handleDeletePhoto} />
             </View>
-            <Text style={{ fontSize: 22, marginTop: 10 }}>Uwagi</Text>
+            <Text style={{ fontSize: 22, marginTop: 50 }}>Uwagi</Text>
             <View style={styles.textInputContainer}>
               <TextInput
                 multiline={true}

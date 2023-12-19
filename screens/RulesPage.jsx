@@ -1,13 +1,22 @@
-import { StyleSheet, View, LogBox, Alert } from "react-native";
+import React, { useEffect } from "react";
+import {
+  StyleSheet,
+  View,
+  LogBox,
+  Alert,
+  TouchableOpacity,
+  Text,
+} from "react-native";
 import { Button } from "../components/Button";
 import { backendLocalHostname } from "../services/Hostname";
 import axios from "axios";
 import * as FileSystem from "expo-file-system";
 import * as IntentLauncher from "expo-intent-launcher";
+import BarsIcon from "react-native-vector-icons/FontAwesome";
 
 LogBox.ignoreAllLogs();
 
-export const RulesPage = () => {
+export const RulesPage = ({ navigation }) => {
   const handlePress = async () => {
     Alert.alert(
       "Potwierdzenie",
@@ -35,8 +44,6 @@ export const RulesPage = () => {
         { data: {}, body: "" }
       );
       const base64 = response.data.pdfContentBase64;
-
-      // Konwertuj base64 na plik PDF
       const pdfUri = `${FileSystem.cacheDirectory}regulamin.pdf`;
       await FileSystem.writeAsStringAsync(pdfUri, base64, {
         encoding: FileSystem.EncodingType.Base64,
@@ -54,6 +61,39 @@ export const RulesPage = () => {
     }
   };
 
+  useEffect(() => {
+    navigation.setOptions({
+      header: () => (
+        <View
+          style={{
+            flexDirection: "row",
+            backgroundColor: "#DADADA",
+            height: 90,
+            borderBottomLeftRadius: 25,
+            borderBottomRightRadius: 25,
+            alignItems: "flex-end",
+            width: "100%",
+          }}
+        >
+          <TouchableOpacity
+            onPress={() => navigation.openDrawer()}
+            style={{ marginLeft: 15, marginBottom: 8 }}
+          >
+            <BarsIcon
+              size={20}
+              name="bars"
+              style={{
+                marginRight: 35,
+              }}
+            />
+          </TouchableOpacity>
+          <View>
+            <Text style={{ fontSize: 28, color: "#0F4C8A" }}>Regulamin</Text>
+          </View>
+        </View>
+      ),
+    });
+  }, []);
   return (
     <View style={styles.container}>
       <Button onPress={handlePress}>Kliknij tutaj aby pobrać regulamin</Button>

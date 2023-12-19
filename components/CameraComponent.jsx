@@ -14,7 +14,6 @@ export const CameraComponent = ({ onPhotoTaken, onBase64Taken }) => {
 
   useEffect(() => {
     (async () => {
-      MediaLibrary.requestPermissionsAsync();
       const cameraStatus = await Camera.requestCameraPermissionsAsync();
       setCameraPermission(cameraStatus.status === "granted");
     })();
@@ -27,7 +26,7 @@ export const CameraComponent = ({ onPhotoTaken, onBase64Taken }) => {
       });
       return base64;
     } catch (error) {
-      console.error("Błąd konwersji na Base64:", error);
+      alert('Błąd krytyczny!');
       return null;
     }
   };
@@ -60,15 +59,19 @@ export const CameraComponent = ({ onPhotoTaken, onBase64Taken }) => {
         });
         setPhoto(data.uri);
       } catch (e) {
-        console.log(e);
+        alert('Błąd podczas robienia zdjęcia!')
       }
     }
   };
 
+  if (cameraPermission === null) {
+    return <Text>Proszę czekać, sprawdzam uprawnienia...</Text>;
+  }
+
   if (cameraPermission === false) {
     return <Text>Brak uprawnień do kamery</Text>;
   }
-
+  
   return (
     <View
       style={{

@@ -75,11 +75,6 @@ function DrawerRoot({ navigation }) {
         component={ProfilePage}
         options={{
           unmountOnBlur: true,
-          headerTitle: () => (
-            <View>
-              <Text style={{ fontSize: 28, color: "#0F4C8A" }}>Mój Profil</Text>
-            </View>
-          ),
         }}
       />
       
@@ -102,7 +97,7 @@ function DrawerRoot({ navigation }) {
           unmountOnBlur: true,
           headerShown: false,
           headerTitle: () => (
-            <View>
+            <View style={{}}>
               <Text style={{ fontSize: 28, color: "#0F4C8A" }}>
                 Lista rezerwacji
               </Text>
@@ -151,16 +146,16 @@ export const ReservationStackNavigator = ({ navigation }) => {
               style={{
                 flexDirection: "row",
                 backgroundColor: "#DADADA",
-                height: 100,
+                height: 90,
                 borderBottomLeftRadius: 25,
                 borderBottomRightRadius: 25,
-                alignItems: "center",
+                alignItems: "flex-end",
                 width: "100%",
               }}
             >
               <TouchableOpacity
                 onPress={() => navigation.openDrawer()}
-                style={{ marginLeft: 15 }}
+                style={{ marginLeft: 15, marginBottom:8 }}
               >
                 <BarsIcon
                   size={20}

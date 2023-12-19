@@ -18,8 +18,8 @@ import BarsIcon from "react-native-vector-icons/FontAwesome";
 
 export const InspectPage = ({ navigation }) => {
   const [location, setLocation] = useState({
-    latitude: 51.043444,
-    longitude: 20.843153,
+    latitude: 51.00147660896586,
+    longitude: 20.775563090091644,
   });
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -50,26 +50,35 @@ export const InspectPage = ({ navigation }) => {
       longitudeDelta: 0.1,
     });
   };
-
-  const debounce = (callback, delay) => {
-    let timeoutId;
-
-    return (...args) => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        callback(...args);
-      }, delay);
-    };
+  const Fetch = async () => {
+    const data = await GetFishingSpotsByQuery(searchQuery);
+    setFishingSpotsByQuery(data);
   };
 
-  const handleSearchDebounced = debounce(async (text) => {
-    const data = await GetFishingSpotsByQuery(text);
-    setFishingSpotsByQuery(data);
-  }, 1000);
+  useEffect(() => {
+    const handleDebouncedInput = debounce(() => {
+      if (searchQuery != "") {
+        Fetch();
+      }
+    }, 1000);
 
-  const handleSearch = async (text) => {
-    setSearchQuery(text);
-    handleSearchDebounced(text);
+    handleDebouncedInput();
+    return () => {
+      handleDebouncedInput.cancel();
+    };
+  }, [searchQuery]);
+
+  const debounce = (func, delay) => {
+    let timeoutId;
+    const debouncedFunction = (...args) => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => func(...args), delay);
+    };
+    debouncedFunction.cancel = () => {
+      clearTimeout(timeoutId);
+    };
+
+    return debouncedFunction;
   };
 
   useEffect(() => {
@@ -79,16 +88,16 @@ export const InspectPage = ({ navigation }) => {
           style={{
             flexDirection: "row",
             backgroundColor: "#DADADA",
-            height: 100,
+            height: 90,
             borderBottomLeftRadius: 25,
             borderBottomRightRadius: 25,
-            alignItems: "center",
+            alignItems: "flex-end",
             width: "100%",
           }}
         >
           <TouchableOpacity
             onPress={() => navigation.openDrawer()}
-            style={{ marginLeft: 15 }}
+            style={{ marginLeft: 15, marginBottom: 8 }}
           >
             <BarsIcon
               size={20}
@@ -98,16 +107,14 @@ export const InspectPage = ({ navigation }) => {
               }}
             />
           </TouchableOpacity>
-          <View>
-              <TextInput
-                placeholder="Wyszukaj łowisko do kontroli"
-                style={{ fontSize: 20, borderColor: "#EBEBEB" }}
-                value={searchQuery}
-                onChangeText={async (text) => {
-                  handleSearch(text);
-                }}
-              ></TextInput>
-            </View>
+          <View style={{ width: "75%" }}>
+            <TextInput
+              placeholder="Wyszukaj łowisko do kontroli"
+              style={{ fontSize: 20, borderColor: "#EBEBEB", marginBottom: 4 }}
+              value={searchQuery}
+              onChangeText={(text) => setSearchQuery(text)}
+            ></TextInput>
+          </View>
         </View>
       ),
     });

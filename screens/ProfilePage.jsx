@@ -7,10 +7,13 @@ import {
   TextInput,
   SafeAreaView,
   ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
 import { GetUserInfo, UpdateUserInfo } from "../Controllers/AccountController";
 import { LoadingModal } from "../components/LoadingModal.jsx";
 import { Button } from "../components/Button.jsx";
+import BarsIcon from "react-native-vector-icons/FontAwesome";
+
 export const ProfilePage = ({ navigation }) => {
   const [editMode, setEditMode] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -57,6 +60,40 @@ export const ProfilePage = ({ navigation }) => {
       }
     } else setEditMode(true);
   };
+
+  useEffect(() => {
+    navigation.setOptions({
+      header: () => (
+        <View
+          style={{
+            flexDirection: "row",
+            backgroundColor: "#DADADA",
+            height: 90,
+            borderBottomLeftRadius: 25,
+            borderBottomRightRadius: 25,
+            alignItems: "flex-end",
+            width: "100%",
+          }}
+        >
+          <TouchableOpacity
+            onPress={() => navigation.openDrawer()}
+            style={{ marginLeft: 15, marginBottom: 8 }}
+          >
+            <BarsIcon
+              size={20}
+              name="bars"
+              style={{
+                marginRight: 35,
+              }}
+            />
+          </TouchableOpacity>
+          <View>
+            <Text style={{ fontSize: 28, color: "#0F4C8A" }}>Mój Profil</Text>
+          </View>
+        </View>
+      ),
+    });
+  }, []);
 
   return (
     <View style={styles.container}>

@@ -14,7 +14,7 @@ export const UsersTable = ({ usersData, navigation, fishingSpotid }) => {
       </View>
       {usersData.map((item, key) => (
         <TouchableOpacity
-          key={key}
+          key={item.cardNumber}
           onPress={() => handleUserPress(item)}
           style={{ flexDirection: "row", paddingVertical: 10 }}
         >
