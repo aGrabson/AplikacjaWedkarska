@@ -69,8 +69,6 @@ export const ProfilePage = ({ navigation }) => {
             flexDirection: "row",
             backgroundColor: "#DADADA",
             height: 90,
-            borderBottomLeftRadius: 25,
-            borderBottomRightRadius: 25,
             alignItems: "flex-end",
             width: "100%",
           }}
