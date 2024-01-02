@@ -45,18 +45,22 @@ export const InspectUserPage = ({ navigation, route }) => {
   const reservationId = route.params.reservationId;
 
   const handlePress = async () => {
-    setLoading(true)
-    const listOfPhotos = photos.map((item) => (item.base64) )
-    const data = {comment: text, reservationId: reservationId, ListOfPhotos: listOfPhotos}
-    await PostInspection(data)
-    setLoading(false)
+    setLoading(true);
+    const listOfPhotos = photos.map((item) => item.base64);
+    const data = {
+      comment: text,
+      reservationId: reservationId,
+      ListOfPhotos: listOfPhotos,
+    };
+    await PostInspection(data);
+    setLoading(false);
     navigation.navigate("InspectionInfoPage", { Id: fishingSpotId });
   };
 
   useEffect(() => {
     FetchData();
   }, []);
-  
+
   const FetchData = async () => {
     setIsLoading(true);
     const data = await GetFishingSpot(fishingSpotId);
@@ -112,12 +116,15 @@ export const InspectUserPage = ({ navigation, route }) => {
   };
 
   const handleBase64Taken = async (base64Image) => {
-    const newPhotos = [...photos, { uri: `data:image/jpeg;base64,${base64Image}`, base64: base64Image }];
+    const newPhotos = [
+      ...photos,
+      { uri: `data:image/jpeg;base64,${base64Image}`, base64: base64Image },
+    ];
     setPhotos(newPhotos);
   };
 
   const handlePhotoTaken = (photoUri) => {
-    setPhotoBase64(photoUri)
+    setPhotoBase64(photoUri);
   };
 
   const handleDeletePhoto = (index) => {
@@ -169,6 +176,7 @@ export const InspectUserPage = ({ navigation, route }) => {
                   <>
                     {fishList.map((groupOfFishes, key) => (
                       <View
+                        key={key}
                         style={{
                           width: "90%",
                           flex: 1,
@@ -179,7 +187,6 @@ export const InspectUserPage = ({ navigation, route }) => {
                       >
                         <ExpandableComponent
                           item={groupOfFishes}
-                          key={key}
                           onClick={() => updateLayout(key)}
                           onPress={onPressMinus}
                           isFishListEditable={true}
@@ -210,14 +217,17 @@ export const InspectUserPage = ({ navigation, route }) => {
               visible={isCameraVisible}
               onRequestClose={handleCloseCamera}
               animationType="slide"
-              style={{width:'100%', height:'100%'}}
+              style={{ width: "100%", height: "100%" }}
             >
-              <CameraComponent onPhotoTaken={handlePhotoTaken} onBase64Taken={handleBase64Taken}/>
+              <CameraComponent
+                onPhotoTaken={handlePhotoTaken}
+                onBase64Taken={handleBase64Taken}
+              />
             </Modal>
-            <View style={{flex:1}}>
+            <View style={{ flex: 1 }}>
               <PhotoList photos={photos} onDeletePhoto={handleDeletePhoto} />
             </View>
-            <Text style={{ fontSize: 22, marginTop: 50 }}>Uwagi</Text>
+            <Text style={{ fontSize: 22, marginTop: 60 }}>Uwagi</Text>
             <View style={styles.textInputContainer}>
               <TextInput
                 multiline={true}

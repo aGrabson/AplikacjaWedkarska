@@ -17,7 +17,7 @@ export const ListOfReservationsPage = ({ navigation, route }) => {
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pageNumber, setPageNumber] = useState(1);
-  const [pageSize, setPageSize] = useState(7);
+  const [pageSize, setPageSize] = useState(10);
   const [allDataFetched, setAllDataFetched] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const fakeDelay = (ms) => new Promise((res) => setTimeout(res, ms));
